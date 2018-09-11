@@ -38,11 +38,11 @@ namespace Schedule
       });
     }
 
-    public void WriteData(string range, IList<object> data)
+    public void WriteData(string range, List<IList<object>> data)
     {
       var valueRange = new ValueRange();
 
-      valueRange.Values = new List<IList<object>>() {data};
+      valueRange.Values = data;
 
       var appendRequest = service.Spreadsheets.Values.Append(valueRange, spreadsheetId, range);
 

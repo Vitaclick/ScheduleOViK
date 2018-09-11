@@ -46,7 +46,18 @@ namespace Schedule
 
         dynamic res = script.Execute(scope);
 
-        IList<object> data = (IList<object>)scope.GetVariable("revData");
+
+        var data = new List<IList<object>>() { };
+
+        var dynamicDataFromPy = scope.GetVariable("revData");
+
+        foreach (var i in dynamicDataFromPy)
+        {
+          data.Add((IList<object>)i);
+        }
+
+
+        //        data.Add(dynamicDataFromPy);
 
 
         dbTransfer.WriteData(range, data);
