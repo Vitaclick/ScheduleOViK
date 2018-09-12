@@ -60,7 +60,7 @@ namespace Schedule
         //        data.Add(dynamicDataFromPy);
 
 
-        dbTransfer.WriteData(range, data);
+        // dbTransfer.WriteData(range, data);
         //                string scriptName = Assembly.GetExecutingAssembly().GetName().Name + ".Resources." + "ToExcel.py";
         //                Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(scriptName);
         //                if (stream != null)
@@ -68,6 +68,24 @@ namespace Schedule
         //                    string script = new StreamReader(stream).ReadToEnd();
         //                    engine.Execute(script, scope);
         //                }
+
+        var sheetValues = dbTransfer.ReadData("Общий!A:A");
+        // flatten and array
+        var keySheetValues = sheetValues.SelectMany(x => x).Distinct();
+        // match data values with spreadsheet
+        var filteredNewValues = new List<IList<object>> { };
+
+        foreach (var dataRow in data)
+        {
+          if (!keySheetValues.Contains(dataRow[0]))
+          {
+            filteredNewValues.Add(dataRow);
+          }
+        }
+
+
+        // transfer.UpdateSpreadsheet(range, data);
+        dbTransfer.WriteData(range, filteredNewValues);
 
         return Result.Succeeded;
       }

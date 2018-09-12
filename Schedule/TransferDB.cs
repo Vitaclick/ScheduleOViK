@@ -37,6 +37,18 @@ namespace Schedule
         ApplicationName = applicationName
       });
     }
+    public void UpdateSpreadsheet(string range, List<IList<object>> data)
+    {
+      range = "Общий!B2";
+      var valueRange = new ValueRange();
+      valueRange.MajorDimension = "ROWS";
+
+      valueRange.Values = new List<IList<object>> { new List<object> { "updated", "keke" } };
+
+      var updateRequest = service.Spreadsheets.Values.Update(valueRange, spreadsheetId, range);
+      updateRequest.ValueInputOption = SpreadsheetsResource.ValuesResource.UpdateRequest.ValueInputOptionEnum.RAW;
+      var updateResponse = updateRequest.Execute();
+    }
 
     public void WriteData(string range, List<IList<object>> data)
     {
@@ -50,24 +62,26 @@ namespace Schedule
       var appendResponse = appendRequest.Execute();
     }
 
-    public IList<IList<object>> ReadData(string range)
+    public List<List<object>> ReadData(string range)
     {
       // Get values of given range
       SpreadsheetsResource.ValuesResource.GetRequest request = service.Spreadsheets.Values.Get(spreadsheetId, range);
       var response = request.Execute();
       IList<IList<object>> values = response.Values;
+      var outValues = new List<List<object>> { };
+
       if (values != null && values.Count > 0)
       {
         foreach (var row in values)
         {
-          Debug.WriteLine($@"{row[0]} | {row[1]} | {row[2]}");
+          outValues.Add(row as List<object>);
         }
-        return values;
+        return outValues;
       }
       else
       {
         new TaskDialog("Нет данных для импорта");
-        return new List<IList<object>>();
+        return new List<List<object>>();
       }
     }
   }
