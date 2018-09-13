@@ -10,6 +10,7 @@ using Google.Apis.Services;
 using Google.Apis.Auth.OAuth2;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.UI.Events;
 
@@ -62,12 +63,19 @@ namespace Schedule
       var appendResponse = appendRequest.Execute();
     }
 
-    public List<List<object>> ReadData(string range)
+    public List<List<object>> ReadData(string[] ranges)
     {
       // Get values of given range
-      SpreadsheetsResource.ValuesResource.GetRequest request = service.Spreadsheets.Values.Get(spreadsheetId, range);
-      var response = request.Execute();
-      IList<IList<object>> values = response.Values;
+      SpreadsheetsResource.ValuesResource.BatchGetRequest request = service.Spreadsheets.Values.BatchGet(spreadsheetId);
+      request.Ranges = ranges;
+
+
+      //        SpreadsheetsResource.ValuesResource.GetRequest request = service.Spreadsheets.Values.Get(spreadsheetId, range);
+
+      BatchGetValuesResponse response = request.Execute();
+
+
+      IList<IList<object>> values = response.ValueRanges.SelectMany(x => x.Values).ToList();
       var outValues = new List<List<object>> { };
 
       if (values != null && values.Count > 0)

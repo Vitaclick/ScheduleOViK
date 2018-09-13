@@ -69,8 +69,8 @@ namespace Schedule
         //                    engine.Execute(script, scope);
         //                }
 
-        var sheetValues = dbTransfer.ReadData("Общий!A:A");
-        // flatten and array
+        var sheetValues = dbTransfer.ReadData(new[] { "Общий!A:A" });
+        // flatten array
         var keySheetValues = sheetValues.SelectMany(x => x).Distinct();
         // match data values with spreadsheet
         var filteredNewValues = new List<IList<object>> { };
