@@ -59,7 +59,7 @@ namespace Schedule
 
       var appendRequest = service.Spreadsheets.Values.Append(valueRange, spreadsheetId, range);
 
-      appendRequest.ValueInputOption = SpreadsheetsResource.ValuesResource.AppendRequest.ValueInputOptionEnum.USERENTERED;
+      appendRequest.ValueInputOption = SpreadsheetsResource.ValuesResource.AppendRequest.ValueInputOptionEnum.RAW;
       var appendResponse = appendRequest.Execute();
     }
 
