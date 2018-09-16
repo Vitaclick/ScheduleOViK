@@ -73,6 +73,16 @@ namespace Schedule.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
+        internal static byte[] client_secret {
+            get {
+                object obj = ResourceManager.GetObject("client_secret", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
         internal static byte[] FromExcel {
             get {
                 object obj = ResourceManager.GetObject("FromExcel", resourceCulture);

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Reflection;
 using System.Collections.Generic;
@@ -27,21 +27,25 @@ namespace Schedule
             Document doc = ui_doc?.Document;
             try
             {
-                ScriptEngine engine = Python.CreateEngine();
+              Dictionary<string, object> options = new Dictionary<string, object> { ["Debug"] = true };
+
+               ScriptEngine engine = Python.CreateEngine(options);
                 ScriptScope scope = engine.CreateScope();
                 scope.SetVariable("doc", doc);
                 scope.SetVariable("uidoc", ui_doc);
-                //engine.ExecuteFile("C:/Drive/ARMOPlug/ScriptPy/UpdateScheduleOV.py", scope);
+              ScriptSource script = engine.CreateScriptSourceFromFile(@"D:\#Projects\#REPOS\ScheduleOViK\Schedule\Resources\UpdateSchedule.py");
 
-                string scriptName = Assembly.GetExecutingAssembly().GetName().Name + ".Resources." + "UpdateSchedule.py";
-                Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(scriptName);
-                if (stream != null)
-                {
-                    string script = new StreamReader(stream).ReadToEnd();
-                    engine.Execute(script, scope);
-                }
 
-                return Result.Succeeded;
+        //                string scriptName = Assembly.GetExecutingAssembly().GetName().Name + ".Resources." + "UpdateSchedule.py";
+        //                Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(scriptName);
+        //                if (stream != null)
+        //                {
+        //                    string script = new StreamReader(stream).ReadToEnd();
+        //                    engine.Execute(script, scope);
+        //                }
+        dynamic res = script.Execute(scope);
+
+        return Result.Succeeded;
             }
             // This is where we "catch" potential errors and define how to deal with them
             catch (Autodesk.Revit.Exceptions.OperationCanceledException)

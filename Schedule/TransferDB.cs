@@ -11,6 +11,7 @@ using Google.Apis.Auth.OAuth2;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.UI.Events;
 
@@ -26,8 +27,10 @@ namespace Schedule
 
     public TransferDB()
     {
-      // !!!!!!!! CHANGE TO RESOURCES !!!!!!!!!!!!!!!
-      using (var stream = new FileStream(@"D:\#Projects\#REPOS\ScheduleOViK\Schedule\client_secret.json", FileMode.Open, FileAccess.Read))
+      // get connection credentials from file
+      string connectionSecret = Assembly.GetExecutingAssembly().GetName().Name + ".Resources." + "client_secret.json";
+      
+      using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(connectionSecret))
       {
         credential = GoogleCredential.FromStream(stream).CreateScoped(scopes);
       }
@@ -59,38 +62,53 @@ namespace Schedule
 
       var appendRequest = service.Spreadsheets.Values.Append(valueRange, spreadsheetId, range);
 
-      appendRequest.ValueInputOption = SpreadsheetsResource.ValuesResource.AppendRequest.ValueInputOptionEnum.RAW;
+      appendRequest.ValueInputOption = SpreadsheetsResource.ValuesResource.AppendRequest.ValueInputOptionEnum.USERENTERED;
       var appendResponse = appendRequest.Execute();
     }
 
-    public List<List<object>> ReadData(string[] ranges)
+    public List<List<object>> ReadSheetData(string range)
+    {
+      var request = service.Spreadsheets.Values.Get(spreadsheetId, range);
+      ValueRange response = request.Execute();
+
+      IList<IList<object>> values = response.Values;
+
+      var resultValues = new List<List<object>> { };
+
+      if (values != null && values.Count > 0)
+      {
+        foreach (var rowValue in values)
+        {
+          if (rowValue.Count == 0) continue;
+          resultValues.Add(rowValue as List<object>);
+        }
+      }
+      return resultValues;
+    }
+
+    public List<List<object>> ReadBatchSheetData(string[] ranges)
     {
       // Get values of given range
       SpreadsheetsResource.ValuesResource.BatchGetRequest request = service.Spreadsheets.Values.BatchGet(spreadsheetId);
       request.Ranges = ranges;
 
-
-      //        SpreadsheetsResource.ValuesResource.GetRequest request = service.Spreadsheets.Values.Get(spreadsheetId, range);
-
       BatchGetValuesResponse response = request.Execute();
 
+      IList<ValueRange> responses = response.ValueRanges;
 
-      IList<IList<object>> values = response.ValueRanges.SelectMany(x => x.Values).ToList();
-      var outValues = new List<List<object>> { };
+      var resultValues = new List<List<object>> { };
 
-      if (values != null && values.Count > 0)
+      foreach (var res in responses)
       {
-        foreach (var row in values)
+        if (res.Values != null)
         {
-          outValues.Add(row as List<object>);
+
+          var values = res.Values.SelectMany(x => x.DefaultIfEmpty("")).ToList();
+          resultValues.Add(values);
         }
-        return outValues;
       }
-      else
-      {
-        new TaskDialog("Нет данных для импорта");
-        return new List<List<object>>();
-      }
+
+      return resultValues;
     }
   }
 }

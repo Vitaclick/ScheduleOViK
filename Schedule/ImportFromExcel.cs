@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Reflection;
 using System.Collections.Generic;
@@ -20,18 +20,23 @@ namespace Schedule
     {
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
-
             // Get application and document objects
             UIApplication ui_app = commandData.Application;
             UIDocument ui_doc = ui_app?.ActiveUIDocument;
             Document doc = ui_doc?.Document;
+
+            // Create conneciton between user and Spreadsheet
+            var dbTransfer = new TransferDB();
+            var dataFromSpreadsheet = dbTransfer.ReadSheetData("Общий!A:K");
+
             try
             {
                 ScriptEngine engine = Python.CreateEngine();
                 ScriptScope scope = engine.CreateScope();
+
+                engine.GetSysModule().SetVariable("dataFromSpreadsheet", dataFromSpreadsheet.ToArray());
                 scope.SetVariable("doc", doc);
                 scope.SetVariable("uidoc", ui_doc);
-                //engine.ExecuteFile("C:/Drive/ARMOPlug/ScriptPy/OVFromExcel.py", scope);
 
                 string scriptName = Assembly.GetExecutingAssembly().GetName().Name + ".Resources." + "FromExcel.py";
                 Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(scriptName);
@@ -41,21 +46,22 @@ namespace Schedule
                     engine.Execute(script, scope);
                 }
 
-                return Result.Succeeded;
-            }
-            // This is where we "catch" potential errors and define how to deal with them
-            catch (Autodesk.Revit.Exceptions.OperationCanceledException)
-            {
-                // If user decided to cancel the operation return Result.Canceled
-                return Result.Cancelled;
-            }
-            catch (Exception ex)
-            {
-                // If something went wrong return Result.Failed
-                message = ex.Message;
-                return Result.Failed;
-            }
+                TaskDialog.Show("Всё хорошо", "ОК");
 
+                return Result.Succeeded;
+                }
+                // This is where we "catch" potential errors and define how to deal with them
+                catch (Autodesk.Revit.Exceptions.OperationCanceledException)
+                {
+                    // If user decided to cancel the operation return Result.Canceled
+                    return Result.Cancelled;
+                }
+                catch (Exception ex)
+                {
+                    // If something went wrong return Result.Failed
+                    message = ex.Message;
+                    return Result.Failed;
+            }
         }
     }
 }

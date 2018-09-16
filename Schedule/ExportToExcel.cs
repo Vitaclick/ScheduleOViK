@@ -30,65 +30,63 @@ namespace Schedule
 
       // Select sheet and range
       string sheetName = "Общий";
-      var range = $"{sheetName}!A:M";
+      var range = $"{sheetName}!A:A";
 
       try
       {
-        Dictionary<string, object> options = new Dictionary<string, object> { ["Debug"] = true };
 
-        ScriptEngine engine = Python.CreateEngine(options);
+        ScriptEngine engine = Python.CreateEngine();
 
-        ScriptSource script = engine.CreateScriptSourceFromFile(@"D:\#Projects\#REPOS\ScheduleOViK\Schedule\Scripts\OVToExcel.py");
         ScriptScope scope = engine.CreateScope();
         scope.SetVariable("doc", doc);
         scope.SetVariable("uidoc", ui_doc);
         scope.SetVariable("uiapp", ui_app);
 
-        dynamic res = script.Execute(scope);
+        string scriptName = Assembly.GetExecutingAssembly().GetName().Name + ".Resources." + "ToExcel.py";
+        Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(scriptName);
+        if (stream != null)
+        {
+          string script = new StreamReader(stream).ReadToEnd();
+          engine.Execute(script, scope);
+        }
 
-
-        var data = new List<IList<object>>() { };
+        // Import schedule data from IPython
+        var revitData = new List<IList<object>>() { };
 
         var dynamicDataFromPy = scope.GetVariable("revData");
 
         foreach (var i in dynamicDataFromPy)
         {
-          data.Add((IList<object>)i);
+          revitData.Add((IList<object>)i);
         }
 
+        // Forming request from spreadsheet
+        var sheetBatchValues = dbTransfer.ReadBatchSheetData(new[] { "Общий!A:A", "Общий!C:C", "Общий!D:D" });
 
-        //        data.Add(dynamicDataFromPy);
-
-
-        // dbTransfer.WriteData(range, data);
-        //                string scriptName = Assembly.GetExecutingAssembly().GetName().Name + ".Resources." + "ToExcel.py";
-        //                Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(scriptName);
-        //                if (stream != null)
-        //                {
-        //                    string script = new StreamReader(stream).ReadToEnd();
-        //                    engine.Execute(script, scope);
-        //                }
-
-        var sheetValues = dbTransfer.ReadData(new[] { "Общий!A:A", "Общий!C:C", "Общий!D:D" });
-        // flatten array
-        foreach (var row in sheetValues)
+        // Compose unique keys for matching with Revit data
+        var uniqueSheetKeys = new List<string>() { };
+        if (sheetBatchValues.Count > 0)
         {
-          
+          for (int i = 0; i < sheetBatchValues.Max(x => x.Count); i++)
+          {
+            var key = sheetBatchValues[0].ElementAtOrDefault(i) as string + sheetBatchValues[1].ElementAtOrDefault(i) +
+                      sheetBatchValues[2].ElementAtOrDefault(i);
+            uniqueSheetKeys.Add(key);
+          }
         }
-        var keySheetValues = sheetValues.SelectMany(x => x).Distinct();
-        // match data values with spreadsheet
+        // match revit data values with spreadsheet
         var filteredNewValues = new List<IList<object>> { };
 
-        foreach (var dataRow in data)
+        foreach (var dataRow in revitData)
         {
-          if (!keySheetValues.Contains(dataRow[0]))
+          // form unique key for revit schedule data
+          var uniqueRevitDataKey = dataRow[0] as string + dataRow[2] + dataRow[3];
+          if (!uniqueSheetKeys.Contains(uniqueRevitDataKey))
           {
             filteredNewValues.Add(dataRow);
           }
         }
 
-
-        // transfer.UpdateSpreadsheet(range, data);
         dbTransfer.WriteData(range, filteredNewValues);
 
         return Result.Succeeded;
