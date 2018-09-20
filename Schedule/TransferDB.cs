@@ -21,16 +21,25 @@ namespace Schedule
   {
     string[] scopes = { SheetsService.Scope.Spreadsheets };
     public string applicationName = "Current transfer";
+#if DEBUG
+    string spreadsheetId = "1LTUA8C-tIBgieNw7PjDGjkSBvV0_i5vpwnJc2C_sKLk";
+#else
     string spreadsheetId = "16OOlFqawtSqN3xgl-Kn4VkdyTFKba53nXrFPvubDjR0";
+#endif
     private SheetsService service;
     GoogleCredential credential;
 
     public TransferDB()
     {
+#if DEBUG
+      string connectionSecret = @"D:\#Projects\#REPOS\ScheduleOViK\Schedule\LibTreeSecret_debug.json";
+      using (var stream = new FileStream(connectionSecret, FileMode.Open, FileAccess.Read))
+#else
       // get connection credentials from file
       string connectionSecret = Assembly.GetExecutingAssembly().GetName().Name + ".Resources." + "client_secret.json";
-      
+
       using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(connectionSecret))
+#endif
       {
         credential = GoogleCredential.FromStream(stream).CreateScoped(scopes);
       }

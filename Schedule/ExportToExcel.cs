@@ -12,6 +12,7 @@ using Autodesk.Revit.Attributes;
 
 using IronPython.Hosting;
 using Microsoft.Scripting.Hosting;
+using Autodesk.Revit.Exceptions;
 
 namespace Schedule
 {
@@ -29,7 +30,14 @@ namespace Schedule
       Document doc = ui_doc?.Document;
 
       // Select sheet and range
-      string sheetName = doc.ProjectInformation.LookupParameter("AG_Scp_Лист спецификации").ToString();
+      var projectInfo = doc.ProjectInformation;
+      var sheetName = projectInfo.LookupParameter("AG_Scp_Лист спецификации")?.AsString();
+      if (string.IsNullOrEmpty(sheetName))
+      {
+        TaskDialog.Show("Ошибка параметра", "Параметр информации о проекте\n\"AG_Scp_Лист спецификации\"\nне заполнен, либо отсутствует");
+        return Result.Failed;
+      }
+
       var range = $"{sheetName}!A:A";
 
       try

@@ -15,55 +15,64 @@ using Microsoft.Scripting.Hosting;
 
 namespace Schedule
 {
-    [Transaction(TransactionMode.Manual)]
-    public class ImportFromExcel : IExternalCommand
+  [Transaction(TransactionMode.Manual)]
+  public class ImportFromExcel : IExternalCommand
+  {
+    public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
     {
-        public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
+      // Get application and document objects
+      UIApplication ui_app = commandData.Application;
+      UIDocument ui_doc = ui_app?.ActiveUIDocument;
+      Document doc = ui_doc?.Document;
+
+      // Select sheet and range
+      var projectInfo = doc.ProjectInformation;
+      var sheetName = projectInfo.LookupParameter("AG_Scp_Лист спецификации")?.AsString();
+      if (string.IsNullOrEmpty(sheetName))
+      {
+        TaskDialog.Show("Ошибка параметра", "Параметр информации о проекте\n\"AG_Scp_Лист спецификации\"\nне заполнен, либо отсутствует");
+        return Result.Failed;
+      }
+
+      var range = $"{sheetName}!A:K";
+
+      // Create conneciton between user and Spreadsheet
+      var dbTransfer = new TransferDB();
+      var dataFromSpreadsheet = dbTransfer.ReadSheetData(range);
+
+      try
+      {
+        ScriptEngine engine = Python.CreateEngine();
+        ScriptScope scope = engine.CreateScope();
+
+        engine.GetSysModule().SetVariable("dataFromSpreadsheet", dataFromSpreadsheet.ToArray());
+        scope.SetVariable("doc", doc);
+        scope.SetVariable("uidoc", ui_doc);
+
+        string scriptName = Assembly.GetExecutingAssembly().GetName().Name + ".Resources." + "FromExcel.py";
+        Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(scriptName);
+        if (stream != null)
         {
-            // Get application and document objects
-            UIApplication ui_app = commandData.Application;
-            UIDocument ui_doc = ui_app?.ActiveUIDocument;
-            Document doc = ui_doc?.Document;
-
-            string sheetName = doc.ProjectInformation.LookupParameter("AG_Scp_Лист спецификации").ToString();
-
-            // Create conneciton between user and Spreadsheet
-            var dbTransfer = new TransferDB();
-            var dataFromSpreadsheet = dbTransfer.ReadSheetData($"{sheetName}!A:K");
-
-            try
-            {
-                ScriptEngine engine = Python.CreateEngine();
-                ScriptScope scope = engine.CreateScope();
-
-                engine.GetSysModule().SetVariable("dataFromSpreadsheet", dataFromSpreadsheet.ToArray());
-                scope.SetVariable("doc", doc);
-                scope.SetVariable("uidoc", ui_doc);
-
-                string scriptName = Assembly.GetExecutingAssembly().GetName().Name + ".Resources." + "FromExcel.py";
-                Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(scriptName);
-                if (stream != null)
-                {
-                    string script = new StreamReader(stream).ReadToEnd();
-                    engine.Execute(script, scope);
-                }
-
-                TaskDialog.Show("Всё хорошо", "ОК");
-
-                return Result.Succeeded;
-                }
-                // This is where we "catch" potential errors and define how to deal with them
-                catch (Autodesk.Revit.Exceptions.OperationCanceledException)
-                {
-                    // If user decided to cancel the operation return Result.Canceled
-                    return Result.Cancelled;
-                }
-                catch (Exception ex)
-                {
-                    // If something went wrong return Result.Failed
-                    message = ex.Message;
-                    return Result.Failed;
-            }
+          string script = new StreamReader(stream).ReadToEnd();
+          engine.Execute(script, scope);
         }
+
+        TaskDialog.Show("Всё хорошо", "ОК");
+
+        return Result.Succeeded;
+      }
+      // This is where we "catch" potential errors and define how to deal with them
+      catch (Autodesk.Revit.Exceptions.OperationCanceledException)
+      {
+        // If user decided to cancel the operation return Result.Canceled
+        return Result.Cancelled;
+      }
+      catch (Exception ex)
+      {
+        // If something went wrong return Result.Failed
+        message = ex.Message;
+        return Result.Failed;
+      }
     }
+  }
 }
