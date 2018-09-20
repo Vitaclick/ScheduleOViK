@@ -25,9 +25,11 @@ namespace Schedule
             UIDocument ui_doc = ui_app?.ActiveUIDocument;
             Document doc = ui_doc?.Document;
 
+            string sheetName = doc.ProjectInformation.LookupParameter("AG_Scp_Лист спецификации").ToString();
+
             // Create conneciton between user and Spreadsheet
             var dbTransfer = new TransferDB();
-            var dataFromSpreadsheet = dbTransfer.ReadSheetData("Общий!A:K");
+            var dataFromSpreadsheet = dbTransfer.ReadSheetData($"{sheetName}!A:K");
 
             try
             {

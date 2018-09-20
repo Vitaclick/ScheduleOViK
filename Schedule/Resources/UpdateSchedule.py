@@ -153,7 +153,8 @@ def setThiDucts(e):
         dIn = e.get_Parameter(BuiltInParameter.RBS_PIPE_INNER_DIAM_PARAM).AsDouble()
         t = (dOut-dIn)/2
         converted = round(UnitUtils.ConvertFromInternalUnits(t, DisplayUnitType.DUT_MILLIMETERS), 2)
-    spcThiAngle.Set(str(converted))
+        thi = str(converted)
+    spcThiAngle.Set(thi)
 
 # заполнить параметр Толщина Угол для фитингов
 def setThiItems(e):

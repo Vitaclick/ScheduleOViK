@@ -29,7 +29,7 @@ namespace Schedule
       Document doc = ui_doc?.Document;
 
       // Select sheet and range
-      string sheetName = "Общий";
+      string sheetName = doc.ProjectInformation.LookupParameter("AG_Scp_Лист спецификации").ToString();
       var range = $"{sheetName}!A:A";
 
       try
@@ -61,7 +61,7 @@ namespace Schedule
         }
 
         // Forming request from spreadsheet
-        var sheetBatchValues = dbTransfer.ReadBatchSheetData(new[] { "Общий!A:A", "Общий!C:C", "Общий!D:D" });
+        var sheetBatchValues = dbTransfer.ReadBatchSheetData(new[] { $"{sheetName}!A:A", $"{sheetName}!C:C", $"{sheetName}!D:D" });
 
         // Compose unique keys for matching with Revit data
         var uniqueSheetKeys = new List<string>() { };
