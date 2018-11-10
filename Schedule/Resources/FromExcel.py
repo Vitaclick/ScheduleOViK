@@ -21,6 +21,8 @@ def setParameters(elems, dictXl):
             spcArt = e.LookupParameter("AG_Spc_Артикул")
             spcProd = e.LookupParameter("AG_Spc_Изготовитель")
             spcMass = e.LookupParameter("AG_Spc_Масса")
+            spcRemark = e.LookupParameter("AG_Spc_Примечание")
+            spcMTO = e.LookupParameter("AG_Spc_МТО")
 
             famName = e.get_Parameter(BuiltInParameter.ELEM_FAMILY_AND_TYPE_PARAM).AsValueString()
             spcThi = e.LookupParameter("AG_Spc_Толщина Угол").AsString()
@@ -35,6 +37,8 @@ def setParameters(elems, dictXl):
                 setValue(dictXl[code][2], spcArt)
                 setValue(dictXl[code][3], spcProd)
                 setValue(dictXl[code][4], spcMass)
+                setValue(dictXl[code][5], spcRemark)
+                setValue(dictXl[code][6], spcMTO)
             
 def toList(elems):
     if isinstance(elems, list):
@@ -65,8 +69,10 @@ def run():
     colArtxl = transposedDataFromSpreadsheet[5]
     colProdxl = transposedDataFromSpreadsheet[6]
     colMassxl = transposedDataFromSpreadsheet[7]
+    colRemarkxl = transposedDataFromSpreadsheet[8]
+    colMTOxl = transposedDataFromSpreadsheet[9]
 
-    values = zip(colNamexl, colTypexl, colArtxl, colProdxl, colMassxl)
+    values = zip(colNamexl, colTypexl, colArtxl, colProdxl, colMassxl, colRemarkxl, colMTOxl)
 
     dictXl = dict(zip(keys, values))
 
@@ -98,6 +104,8 @@ def run():
     sprinklers = FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_Sprinklers).WhereElementIsNotElementType().ToElements()
     # изоляция труб
     pipeIsol = FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_PipeInsulations).WhereElementIsNotElementType().ToElements()
+    # обобщенные модели
+    generic = FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_GenericModel).WhereElementIsNotElementType().ToElements()
 
     t = Transaction(doc, "SetParameters")
     t.Start()
@@ -115,5 +123,6 @@ def run():
     setParameters(plumbing, dictXl)
     setParameters(sprinklers, dictXl)
     setParameters(pipeIsol, dictXl)
+    setParameters(generic, dictXl)
     t.Commit()
 run()

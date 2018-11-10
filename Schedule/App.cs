@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Reflection;
 
@@ -11,7 +11,7 @@ namespace Schedule
     {
         public static int Security() // Метод по защите программы в зависимости от контрольной даты
         {
-            DateTime ControlDate = new DateTime(2018, 12, 30, 12, 0, 0); // Формируем контрольную дату в формате: год, месяц, день, часы, минуты, секунды
+            DateTime ControlDate = new DateTime(2020, 12, 30, 12, 0, 0); // Формируем контрольную дату в формате: год, месяц, день, часы, минуты, секунды
             DateTime dt = DateTime.Today; // получаем сегодняшнюю дату в таком же формате
             TimeSpan deltaDate = ControlDate - dt; // вычисляем разницу между контрольной и текущей датой
             string deltaDateDays = deltaDate.Days.ToString();
@@ -37,6 +37,8 @@ namespace Schedule
 
             // Add a new ribbon panel
             RibbonPanel ribbonPanel = application.CreateRibbonPanel(tabName, "OV.Schedule");
+            RibbonPanel ribbonPanel1 = application.CreateRibbonPanel(tabName, "HVAC Equipment List");
+            RibbonPanel ribbonPanel2 = application.CreateRibbonPanel(tabName, "HVAC Parts List");
 
             // Get dll assembly path
             string thisAssemblyPath = Assembly.GetExecutingAssembly().Location;
@@ -100,6 +102,45 @@ namespace Schedule
             pb5.ToolTip = "Импортировать данные из Excel";
             BitmapImage pb5Image = new BitmapImage(new Uri("pack://application:,,,/Schedule;component/Resources/importIcon.png"));
             pb5.LargeImage = pb5Image;
+
+
+            // create push button for ToExcelEqL
+            PushButtonData b6Data = new PushButtonData(
+                "cmdToExcelEqL",
+                "Equip List" + System.Environment.NewLine + "to Excel",
+                thisAssemblyPath,
+                "Schedule.ToExcelEqL");
+
+            PushButton pb6 = ribbonPanel1.AddItem(b6Data) as PushButton;
+            pb6.ToolTip = "Экспортировать данные в базу Equipment List";
+            BitmapImage pb6Image = new BitmapImage(new Uri("pack://application:,,,/Schedule;component/Resources/exportIcon.png"));
+            pb6.LargeImage = pb6Image;
+
+
+            // create push button for FromExcelEqL
+            PushButtonData b7Data = new PushButtonData(
+                "cmdFromExcelEqL",
+                "Import" + System.Environment.NewLine + "Equip List",
+                thisAssemblyPath,
+                "Schedule.FromExcelEqL");
+
+            PushButton pb7 = ribbonPanel1.AddItem(b7Data) as PushButton;
+            pb7.ToolTip = "Импортировать данные из Equipment List";
+            BitmapImage pb7Image = new BitmapImage(new Uri("pack://application:,,,/Schedule;component/Resources/importIcon.png"));
+            pb7.LargeImage = pb7Image;
+
+
+            // create push button for UpdatePartsList
+            PushButtonData b8Data = new PushButtonData(
+                "cmdUpdatePartsList",
+                "Update" + System.Environment.NewLine + "Parts List",
+                thisAssemblyPath,
+                "Schedule.UpdatePartsList");
+
+            PushButton pb8 = ribbonPanel2.AddItem(b8Data) as PushButton;
+            pb8.ToolTip = "Обновить Parts List";
+            BitmapImage pb8Image = new BitmapImage(new Uri("pack://application:,,,/Schedule;component/Resources/updateTableIcon.png"));
+            pb8.LargeImage = pb8Image;
 
         }
 

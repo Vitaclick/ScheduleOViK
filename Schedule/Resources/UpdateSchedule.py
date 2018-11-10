@@ -20,7 +20,7 @@ clr.AddReference('System.Drawing')
 from System.Drawing import *
 from System.Windows.Forms import *
 
-antismoke = ["ВПВ", "ППВ", "ДУ", "КДУ", "ПВ"]
+antismoke = ['ВПВ', 'ППВ', 'ДУ', 'КДУ', 'ПВ']
 # функция определения настоящего уровня элемента
 def findLevel(z, levelsSort):
     n = 0
@@ -55,59 +55,8 @@ def runLevel(e):
     lvl = findLevel(z, levelsSort)
     spcLevel = e.LookupParameter("AG_Spc_Уровень")
     spcLevel.Set(str(lvl))
-# генерация имени
-def generateName(e):
-    thi = e.LookupParameter("AG_Spc_Толщина Угол").AsString()
-    if e.Category.Id.IntegerValue == int(BuiltInCategory.OST_DuctFitting) or e.Category.Id.IntegerValue == int(BuiltInCategory.OST_PipeFitting):
-        typeDetail = e.MEPModel.PartType
-        if typeDetail == PartType.Elbow:
-            angle = thi.split(" ")[1]
-            thi = thi.split(" ")[0]
-            catName = "Отвод"
-            catName = catName + " " + angle
-        elif typeDetail == PartType.Transition:
-            catName = "Переход"
-        elif typeDetail == PartType.Tee:
-            catName = "Тройник"
-        elif typeDetail == PartType.SpudAdjustable or typeDetail == PartType.TapAdjustable:
-            catName = "Врезка"
-        elif typeDetail == PartType.Union:
-            catName = "Соединение"
-        elif typeDetail == PartType.Cross:
-            catName = "Крестовина"
-        elif typeDetail == PartType.Cap:
-            catName = "Заглушка"
-        else:
-            catName = ""
-    elif e.Category.Id.IntegerValue == int(BuiltInCategory.OST_DuctCurves):
-        catName = "Воздуховод"
-    elif e.Category.Id.IntegerValue == int(BuiltInCategory.OST_FlexDuctCurves):
-        catName = "Гибкий воздуховод"
-    elif e.Category.Id.IntegerValue == int(BuiltInCategory.OST_FlexPipeCurves):
-        catName = "Гибкий трубопровод"
-    else:
-        catName = "Трубопровод"
 
-    spcSize = e.LookupParameter("AG_Spc_Размер").AsString()
-    spcMaterial = doc.GetElement(e.GetTypeId()).LookupParameter("AG_Spc_Материал").AsString()
-    if spcMaterial != None and spcMaterial.strip() != "":
-        mat = spcMaterial + ", "
-    else:
-        mat = ""
-    # продумать алгоритм расчета толщины гофрированных труб
-    if (e.Category.Id.IntegerValue == int(BuiltInCategory.OST_DuctFitting) or
-        e.Category.Id.IntegerValue == int(BuiltInCategory.OST_DuctCurves) or 
-        e.Category.Id.IntegerValue == int(BuiltInCategory.OST_FlexDuctCurves)):
-        discribe = mat + "толщ. "+ thi +" мм, " + spcSize
-    elif (e.Category.Id.IntegerValue == int(BuiltInCategory.OST_PipeCurves) or 
-        e.Category.Id.IntegerValue == int(BuiltInCategory.OST_PipeFitting)):
-        discribe = mat + spcSize + "x" + thi
-    elif e.Category.Id.IntegerValue == int(BuiltInCategory.OST_FlexPipeCurves):
-        discribe = mat + spcSize
 
-    expectedName = catName+" "+ discribe
-    spcName = e.LookupParameter("AG_Spc_Наименование")
-    spcName.Set(expectedName)
 
 def parSys(e):
     system = e.get_Parameter(BuiltInParameter.RBS_SYSTEM_NAME_PARAM).AsString()
@@ -262,35 +211,15 @@ def setCategoryCode(e, num):
     spcCode = e.LookupParameter("AG_Spc_Код категории")
     spcCode.Set(num)
 
-def squareDuct(e):
-    spcPrim = e.LookupParameter("AG_Spc_Примечание")
-    s = e.get_Parameter(BuiltInParameter.RBS_CURVE_SURFACE_AREA).AsDouble()
-    s_m = UnitUtils.ConvertFromInternalUnits(s, DisplayUnitType.DUT_SQUARE_METERS)
-    roundS = round(s_m, 3)
-    strS = 'S= ' + str(roundS) + ' м'
-    spcPrim.Set(strS)
-
-def squareFittigs(e):
-    spcPrim = e.LookupParameter("AG_Spc_Примечание")
-    geo1 = e.get_Geometry(Options())
-    enum1 = geo1.GetEnumerator()
-    enum1.MoveNext()
-    geo2 = enum1.Current.GetInstanceGeometry()
-    solids = [g for g in geo2 if g.GetType() == Solid]
-    connectors = e.MEPModel.ConnectorManager.Connectors
-
-    consArea = 0
-    for c in connectors:
-        if c.Shape == ConnectorProfileType.Rectangular:
-            consArea += c.Height*c.Width
-        elif c.Shape == ConnectorProfileType.Round:
-            consArea += math.pi*(c.Radius**2)
-
-    area = max([i.SurfaceArea for i in solids]) - consArea
-    area_m = UnitUtils.ConvertFromInternalUnits(area, DisplayUnitType.DUT_SQUARE_METERS)
-    roundS = round(area_m, 3)
-    strS = 'S= ' + str(roundS) + ' м'
-    spcPrim.Set(strS)
+def sizePipeIsol(e):
+    s = e.LookupParameter("AG_Spc_Размер")
+    t = e.LookupParameter("AG_Spc_Толщина Угол")
+    vs = e.get_Parameter(BuiltInParameter.RBS_PIPE_CALCULATED_SIZE).AsString()
+    if "-" in vs:
+        vs = vs.split("-")[0]
+    vt = e.get_Parameter(BuiltInParameter.RBS_INSULATION_THICKNESS_FOR_PIPE).AsValueString()
+    s.Set(vs)
+    t.Set(vt)
 
 # воздуховоды
 ducts = FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_DuctCurves).WhereElementIsNotElementType().ToElements()
@@ -320,6 +249,8 @@ plumbing = FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_Plumbing
 sprinklers = FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_Sprinklers).WhereElementIsNotElementType().ToElements()
 # изоляция труб
 pipeIsol = FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_PipeInsulations).WhereElementIsNotElementType().ToElements()
+# обобщенные модели
+generic = FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_GenericModel).WhereElementIsNotElementType().ToElements()
 # уровни
 levels = FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_Levels).WhereElementIsNotElementType().ToElements()
 levelsSort = sorted(levels, key = lambda i: i.Elevation)
@@ -367,8 +298,6 @@ if fitings:
         itemLevel(e)
         setThiItems(e)
         setCategoryCode(e, 40)
-        generateName(e)
-        squareFittigs(e)
 
 # воздуховоды
 if ducts:
@@ -380,8 +309,6 @@ if ducts:
         runLevel(e)
         setThiDucts(e)
         setCategoryCode(e, 50)
-        generateName(e)
-        squareDuct(e)
 
 # гибкие воздуховоды
 if flexDuct:
@@ -393,8 +320,6 @@ if flexDuct:
         runLevel(e)
         setThiDucts(e)
         setCategoryCode(e, 51)
-        generateName(e)
-        
 
 # трубы
 if pipes:
@@ -406,7 +331,6 @@ if pipes:
         runLevel(e)
         setThiDucts(e)
         setCategoryCode(e, 60)
-        generateName(e)
 
 # гибкие трубы
 if flexPipe:
@@ -417,7 +341,6 @@ if flexPipe:
         parUnit(e, "м")
         runLevel(e)
         setCategoryCode(e, 61)
-        generateName(e)
 
 # соед детали труб
 if pipeFitings:
@@ -429,7 +352,6 @@ if pipeFitings:
         itemLevel(e)
         setThiItems(e)
         setCategoryCode(e, 70)
-        generateName(e)
 
 # арматура труб
 if pipeAccessory:
@@ -475,7 +397,14 @@ if pipeIsol:
         parIsolQuant(e)
         parUnit(e, "м²")
         runLevel(e)
+        sizePipeIsol(e)
         setCategoryCode(e, 120)
+
+# обобщенные модели
+if generic:
+    for e in generic:
+        setCategoryCode(e, 130)
+
 
 t.Commit()
 

@@ -136,4 +136,13 @@
   <data name="UpdateSchedule" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\UpdateSchedule.py;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="hvac_equipment_list_ec06779473dd" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\hvac equipment list-ec06779473dd.json;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="ToExcelEqL" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\ToExcelEqL.py;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="FromExcelEqL" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\FromExcelEqL.py;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
 </root>

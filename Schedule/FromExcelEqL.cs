@@ -16,7 +16,7 @@ using Microsoft.Scripting.Hosting;
 namespace Schedule
 {
   [Transaction(TransactionMode.Manual)]
-  public class ImportFromExcel : IExternalCommand
+  public class FromExcelEqL : IExternalCommand
   {
     public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
     {
@@ -34,11 +34,11 @@ namespace Schedule
         return Result.Failed;
       }
 
-      var range = $"{sheetName}!A:K";
+      var range = $"{sheetName}!A:AX";
 
       // Create conneciton between user and Spreadsheet
-      var dbTransfer = new TransferDB();
-      var dataFromSpreadsheet = dbTransfer.ReadSheetData(range);
+      var dbTransferEL = new TransferDBElist();
+      var dataFromSpreadsheet = dbTransferEL.ReadSheetData(range);
 
       try
       {
@@ -48,10 +48,9 @@ namespace Schedule
         engine.GetSysModule().SetVariable("dataFromSpreadsheet", dataFromSpreadsheet.ToArray());
         scope.SetVariable("doc", doc);
         scope.SetVariable("uidoc", ui_doc);
+        //engine.ExecuteFile("D:/GitHub/Scripts/FromExcelEqL.py", scope);
 
-        //engine.ExecuteFile("D:/GitHub/Scripts/FromExcel.py", scope);
-
-        string scriptName = Assembly.GetExecutingAssembly().GetName().Name + ".Resources." + "FromExcel.py";
+        string scriptName = Assembly.GetExecutingAssembly().GetName().Name + ".Resources." + "FromExcelEqL.py";
         Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(scriptName);
         if (stream != null)
         {
