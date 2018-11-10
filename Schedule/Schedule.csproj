@@ -149,6 +149,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App.cs" />
+    <Compile Include="AvtToExcel.cs" />
     <Compile Include="UpdatePartsList.cs" />
     <Compile Include="FromExcelEqL.cs" />
     <Compile Include="ToExcelEqL.cs" />
@@ -160,7 +161,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="TransferDBEList.cs" />
     <Compile Include="TransferDB.cs" />
     <Compile Include="UpdateSchedule.cs" />
     <Compile Include="CleanSchedule.cs" />
@@ -188,7 +188,6 @@
     <EmbeddedResource Include="Resources\ToExcel.py" />
     <EmbeddedResource Include="Resources\FromExcel.py" />
     <EmbeddedResource Include="Resources\GenerateNames.py" />
-    <EmbeddedResource Include="Resources\hvac equipment list-ec06779473dd.json" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">

@@ -22,7 +22,9 @@ namespace Schedule
     public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
     {
       // Create conneciton to DB (закрывать соединение не нужно)
-      var dbTransferEL = new TransferDBElist();
+      var spreadsheetId = "1Bth5qKK-3uzVQdQ5F9vi83z9WBPBKAOUOnC1CDpcoQE";
+
+      var dbTransferEL = new TransferDB(spreadsheetId);
 
       // Get application and document objects
       UIApplication ui_app = commandData.Application;

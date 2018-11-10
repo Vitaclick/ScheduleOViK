@@ -37,7 +37,8 @@ namespace Schedule
       var range = $"{sheetName}!A:K";
 
       // Create conneciton between user and Spreadsheet
-      var dbTransfer = new TransferDB();
+      string spreadsheetId = "16OOlFqawtSqN3xgl-Kn4VkdyTFKba53nXrFPvubDjR0";
+      var dbTransfer = new TransferDB(spreadsheetId);
       var dataFromSpreadsheet = dbTransfer.ReadSheetData(range);
 
       try

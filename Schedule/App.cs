@@ -39,6 +39,8 @@ namespace Schedule
             RibbonPanel ribbonPanel = application.CreateRibbonPanel(tabName, "OV.Schedule");
             RibbonPanel ribbonPanel1 = application.CreateRibbonPanel(tabName, "HVAC Equipment List");
             RibbonPanel ribbonPanel2 = application.CreateRibbonPanel(tabName, "HVAC Parts List");
+            RibbonPanel ribbonPanel3 = application.CreateRibbonPanel(tabName, "Electric");
+
 
             // Get dll assembly path
             string thisAssemblyPath = Assembly.GetExecutingAssembly().Location;
@@ -142,7 +144,19 @@ namespace Schedule
             BitmapImage pb8Image = new BitmapImage(new Uri("pack://application:,,,/Schedule;component/Resources/updateTableIcon.png"));
             pb8.LargeImage = pb8Image;
 
-        }
+          // create push button for AvtToExcel
+          PushButtonData b9Data = new PushButtonData(
+            "cmdAvtToExcel",
+            "Export AVT" + System.Environment.NewLine + "to Excel",
+            thisAssemblyPath,
+            "Schedule.AvtToExcel");
+
+          PushButton pb9 = ribbonPanel3.AddItem(b9Data) as PushButton;
+          pb9.ToolTip = "Экспортировать TAG автоматики в эксель";
+          BitmapImage pb9Image = new BitmapImage(new Uri("pack://application:,,,/Schedule;component/Resources/exportIcon.png"));
+          pb9.LargeImage = pb9Image;
+
+    }
 
         public Result OnShutdown(UIControlledApplication application)
         {
