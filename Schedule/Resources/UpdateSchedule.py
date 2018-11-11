@@ -56,8 +56,6 @@ def runLevel(e):
     spcLevel = e.LookupParameter("AG_Spc_Уровень")
     spcLevel.Set(str(lvl))
 
-
-
 def parSys(e):
     system = e.get_Parameter(BuiltInParameter.RBS_SYSTEM_NAME_PARAM).AsString()
     spcSystem = e.LookupParameter("AG_Spc_Система")
@@ -77,9 +75,14 @@ def parSize(e):
     spcSize.Set(size)
 def parIsolQuant(e):
     square = e.get_Parameter(BuiltInParameter.RBS_CURVE_SURFACE_AREA).AsDouble()
-    squareM = UnitUtils.ConvertFromInternalUnits(square, DisplayUnitType.DUT_SQUARE_METERS)*1.3
+    squareM = UnitUtils.ConvertFromInternalUnits(square, DisplayUnitType.DUT_SQUARE_METERS)
     spcQuant = e.LookupParameter("AG_Spc_Количество")
     spcQuant.Set(squareM)
+def parIsolQuantPipe(e):
+    length = e.get_Parameter(BuiltInParameter.CURVE_ELEM_LENGTH).AsDouble()
+    len_m = UnitUtils.ConvertFromInternalUnits(length, DisplayUnitType.DUT_METERS)
+    spcQuant = e.LookupParameter("AG_Spc_Количество")
+    spcQuant.Set(len_m)
 def parItemQuant(e):
     spcQuant = e.LookupParameter("AG_Spc_Количество")
     spcQuant.Set(1)
@@ -205,7 +208,6 @@ def setThiItems(e):
     else:
         thiAngle = thi
     spcThiAngle.Set(thiAngle)
-    
 
 def setCategoryCode(e, num):
     spcCode = e.LookupParameter("AG_Spc_Код категории")
@@ -220,6 +222,9 @@ def sizePipeIsol(e):
     vt = e.get_Parameter(BuiltInParameter.RBS_INSULATION_THICKNESS_FOR_PIPE).AsValueString()
     s.Set(vs)
     t.Set(vt)
+def setStock(e, value):
+    pStock = e.LookupParameter('AG_Spc_Запас')
+    pStock.Set(value)
 
 # воздуховоды
 ducts = FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_DuctCurves).WhereElementIsNotElementType().ToElements()
@@ -267,6 +272,7 @@ if equipment:
         parItemQuant(e)
         parUnit(e, "компл.")
         setCategoryCode(e, 10)
+        setStock(e, 1.0)
 
 # воздухораспределители
 if terminal:
@@ -277,6 +283,7 @@ if terminal:
         parUnit(e, "шт.")
         itemLevel(e)
         setCategoryCode(e, 20)
+        setStock(e, 1.0)
 
 # арматура
 if accessory:
@@ -287,6 +294,7 @@ if accessory:
         parUnit(e, "шт.")
         itemLevel(e)
         setCategoryCode(e, 30)
+        setStock(e, 1.0)
 
 # фитинги
 if fitings:
@@ -298,6 +306,7 @@ if fitings:
         itemLevel(e)
         setThiItems(e)
         setCategoryCode(e, 40)
+        setStock(e, 1.0)
 
 # воздуховоды
 if ducts:
@@ -309,6 +318,7 @@ if ducts:
         runLevel(e)
         setThiDucts(e)
         setCategoryCode(e, 50)
+        setStock(e, 1.15)
 
 # гибкие воздуховоды
 if flexDuct:
@@ -320,6 +330,7 @@ if flexDuct:
         runLevel(e)
         setThiDucts(e)
         setCategoryCode(e, 51)
+        setStock(e, 1.15)
 
 # трубы
 if pipes:
@@ -331,6 +342,7 @@ if pipes:
         runLevel(e)
         setThiDucts(e)
         setCategoryCode(e, 60)
+        setStock(e, 1.15)
 
 # гибкие трубы
 if flexPipe:
@@ -341,6 +353,7 @@ if flexPipe:
         parUnit(e, "м")
         runLevel(e)
         setCategoryCode(e, 61)
+        setStock(e, 1.15)
 
 # соед детали труб
 if pipeFitings:
@@ -352,6 +365,7 @@ if pipeFitings:
         itemLevel(e)
         setThiItems(e)
         setCategoryCode(e, 70)
+        setStock(e, 1.0)
 
 # арматура труб
 if pipeAccessory:
@@ -362,6 +376,7 @@ if pipeAccessory:
         parUnit(e, "шт.")
         itemLevel(e)
         setCategoryCode(e, 80)
+        setStock(e, 1.0)
 
 # сантехника
 if plumbing:
@@ -371,6 +386,7 @@ if plumbing:
         parItemQuant(e)
         parUnit(e, "шт.")
         setCategoryCode(e, 90)
+        setStock(e, 1.0)
 
 # сприклеры
 if sprinklers:
@@ -380,6 +396,7 @@ if sprinklers:
         parItemQuant(e)
         parUnit(e, "шт.")
         setCategoryCode(e, 100)
+        setStock(e, 1.0)
 
 # изоляция воздуховодов
 if isol:
@@ -389,21 +406,24 @@ if isol:
         parUnit(e, "м²")
         runLevel(e)
         setCategoryCode(e, 110)
+        setStock(e, 1.45)
 
 # изоляция труб
 if pipeIsol:
     for e in pipeIsol:
         parSys(e)
-        parIsolQuant(e)
-        parUnit(e, "м²")
+        parIsolQuantPipe(e)
+        parUnit(e, "м")
         runLevel(e)
         sizePipeIsol(e)
         setCategoryCode(e, 120)
+        setStock(e, 1.25)
 
 # обобщенные модели
 if generic:
     for e in generic:
         setCategoryCode(e, 130)
+        setStock(e, 1.0)
 
 
 t.Commit()

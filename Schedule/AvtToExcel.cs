@@ -44,16 +44,18 @@ namespace Schedule
 
       try
       {
-
-        ScriptEngine engine = Python.CreateEngine();
+        var opts = new Dictionary<string, object>();
+        if (System.Diagnostics.Debugger.IsAttached)
+          opts["Debug"] = true;
+        ScriptEngine engine = Python.CreateEngine(opts);
 
         ScriptScope scope = engine.CreateScope();
         scope.SetVariable("doc", doc);
         scope.SetVariable("uidoc", ui_doc);
         scope.SetVariable("uiapp", ui_app);
-        engine.ExecuteFile("D:/GitHub/Scripts/AvtToExcel.py", scope);
+        engine.ExecuteFile(@"D:\Drive\ARMOPlug\ScheduleGoogle\ScheduleOViK\Schedule\Resources\AvtToExcel.py", scope);
 
-//        string scriptName = Assembly.GetExecutingAssembly().GetName().Name + ".Resources." + "ToExcelEqL.py";
+//        string scriptName = Assembly.GetExecutingAssembly().GetName().Name + ".Resources." + "AvtToExcel.py";
 //        Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(scriptName);
 //        if (stream != null)
 //        {

@@ -63,6 +63,26 @@ namespace Schedule.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
+        internal static byte[] AvtFromExcel {
+            get {
+                object obj = ResourceManager.GetObject("AvtFromExcel", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] AvtToExcel {
+            get {
+                object obj = ResourceManager.GetObject("AvtToExcel", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
         internal static byte[] CleanSchedule {
             get {
                 object obj = ResourceManager.GetObject("CleanSchedule", resourceCulture);

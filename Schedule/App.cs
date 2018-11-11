@@ -156,6 +156,19 @@ namespace Schedule
           BitmapImage pb9Image = new BitmapImage(new Uri("pack://application:,,,/Schedule;component/Resources/exportIcon.png"));
           pb9.LargeImage = pb9Image;
 
+
+          // create push button for AvtFromExcel
+          PushButtonData b10Data = new PushButtonData(
+            "cmdAvtFromExcel",
+            "Import AVT" + System.Environment.NewLine + "from Excel",
+            thisAssemblyPath,
+            "Schedule.AvtFromExcel");
+
+          PushButton pb10 = ribbonPanel3.AddItem(b10Data) as PushButton;
+          pb10.ToolTip = "Импортировать TAG автоматики из эксель";
+          BitmapImage pb10Image = new BitmapImage(new Uri("pack://application:,,,/Schedule;component/Resources/importIcon.png"));
+          pb10.LargeImage = pb10Image;
+
     }
 
         public Result OnShutdown(UIControlledApplication application)
