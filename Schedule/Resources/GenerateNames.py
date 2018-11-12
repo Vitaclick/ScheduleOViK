@@ -11,10 +11,6 @@ sys.path.append("C:/Program Files (x86)/IronPython 2.7/Lib")
 clr.AddReference('RevitAPI')
 from Autodesk.Revit.DB import *
 
-clr.AddReference('System.Windows.Forms')
-clr.AddReference('System.Drawing')
-from System.Drawing import *
-from System.Windows.Forms import *
 
 # генерация имени
 def generateName(elems):
@@ -97,5 +93,4 @@ generateName(flexPipe)
 
 t.Commit()
 
-MessageBox.Show("ОК", "Предупреждение", MessageBoxButtons.OK, MessageBoxIcon.Information)
 

@@ -27,21 +27,25 @@ namespace Schedule
       Document doc = ui_doc?.Document;
       try
       {
+        var opts = new Dictionary<string, object>();
+        if (System.Diagnostics.Debugger.IsAttached)
+          opts["Debug"] = true;
 
-        ScriptEngine engine = Python.CreateEngine();
+        ScriptEngine engine = Python.CreateEngine(opts);
         ScriptScope scope = engine.CreateScope();
         scope.SetVariable("doc", doc);
         scope.SetVariable("uidoc", ui_doc);
-        engine.ExecuteFile("D:/GitHub/Scripts/UpdatePartsList.py", scope);
+        //engine.ExecuteFile(@"C:\Drive\ARMOPlug\ScheduleGoogle\ScheduleOViK\Schedule\Resources\UpdatePartsList.py", scope);
 
-        //string scriptName = Assembly.GetExecutingAssembly().GetName().Name + ".Resources." + "UpdatePartsList.py";
-        //Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(scriptName);
-        //if (stream != null)
-        //{
-        //  string script = new StreamReader(stream).ReadToEnd();
-        //  engine.Execute(script, scope);
-        //}
+        string scriptName = Assembly.GetExecutingAssembly().GetName().Name + ".Resources." + "UpdatePartsList.py";
+        Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(scriptName);
+        if (stream != null)
+        {
+          string script = new StreamReader(stream).ReadToEnd();
+          engine.Execute(script, scope);
+        }
 
+        TaskDialog.Show("Всё хорошо", "ОК");
         return Result.Succeeded;
       }
       // This is where we "catch" potential errors and define how to deal with them

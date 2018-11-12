@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Reflection;
 using System.Collections.Generic;
@@ -41,6 +41,7 @@ namespace Schedule
                     engine.Execute(script, scope);
                 }
 
+                TaskDialog.Show("Всё хорошо", "ОК");
                 return Result.Succeeded;
             }
             // This is where we "catch" potential errors and define how to deal with them

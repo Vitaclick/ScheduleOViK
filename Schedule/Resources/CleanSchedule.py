@@ -9,11 +9,6 @@ sys.path.append("C:/Program Files (x86)/IronPython 2.7/Lib")
 clr.AddReference('RevitAPI')
 from Autodesk.Revit.DB import *
 
-clr.AddReference('System.Windows.Forms')
-clr.AddReference('System.Drawing')
-from System.Drawing import *
-from System.Windows.Forms import *
-
 
 def cleanParameters(l):
     if l:
@@ -78,5 +73,4 @@ cleanParameters(sprinklers)
 cleanParameters(pipeIsol)
 t.Commit()
 
-MessageBox.Show("ОК", "Предупреждение", MessageBoxButtons.OK, MessageBoxIcon.Information)
 

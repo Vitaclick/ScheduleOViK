@@ -115,15 +115,10 @@
     <Reference Include="RevitAPIUI" Condition="'$(Configuration)' == '2016'">
       <HintPath>C:\Program Files\Autodesk\Revit 2016\RevitAPIUI.dll</HintPath>
       <EmbedInteropTypes>false</EmbedInteropTypes>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="RevitAPIUI" Condition="'$(Configuration)' == '2016'">
-      <HintPath>C:\Program Files\Autodesk\Revit 2016\RevitAPIUI.dll</HintPath>
-      <EmbedInteropTypes>false</EmbedInteropTypes>
       <Private>false</Private>
     </Reference>
     <Reference Include="RevitAPI" Condition="'$(Configuration)' == '2017'">
-      <HintPath>C:\Program Files\Autodesk\Revit 2017\RevitAPI.dll</HintPath>
+      <HintPath>..\..\..\..\..\Program Files\Autodesk\Revit 2018\RevitAPI.dll</HintPath>
       <EmbedInteropTypes>false</EmbedInteropTypes>
       <Private>False</Private>
     </Reference>
@@ -141,6 +136,11 @@
       <HintPath>C:\Program Files\Autodesk\Revit 2018\RevitAPIUI.dll</HintPath>
       <EmbedInteropTypes>false</EmbedInteropTypes>
       <Private>false</Private>
+    </Reference>
+    <Reference Include="RevitAPIUI, Version=16.0.0.0, Culture=neutral, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Program Files\Autodesk\Revit 2018\RevitAPIUI.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -179,6 +179,7 @@
     <EmbeddedResource Include="Resources\FromExcelEqL.py" />
     <EmbeddedResource Include="Resources\AvtToExcel.py" />
     <EmbeddedResource Include="Resources\AvtFromExcel.py" />
+    <EmbeddedResource Include="Resources\UpdatePartsList.py" />
     <Content Include="Schedule.addin">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>

@@ -15,11 +15,6 @@ from itertools import groupby
 clr.AddReference('RevitAPI')
 from Autodesk.Revit.DB import *
 
-clr.AddReference('System.Windows.Forms')
-clr.AddReference('System.Drawing')
-from System.Drawing import *
-from System.Windows.Forms import *
-
 antismoke = ['ВПВ', 'ППВ', 'ДУ', 'КДУ', 'ПВ']
 # функция определения настоящего уровня элемента
 def findLevel(z, levelsSort):
@@ -428,6 +423,4 @@ if generic:
 
 t.Commit()
 
-
-MessageBox.Show("ОК", "Предупреждение", MessageBoxButtons.OK, MessageBoxIcon.Information)
 

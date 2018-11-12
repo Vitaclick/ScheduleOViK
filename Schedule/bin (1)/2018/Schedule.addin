@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<RevitAddIns>
+  <AddIn Type="Application">
+    <Name>SampleApplication</Name>
+    <Assembly>Schedule.dll</Assembly>
+    <AddInId>28119625-61ce-4cea-b111-47d10e16c9cc</AddInId>
+    <FullClassName>Schedule.App</FullClassName>
+    <VendorId>A Suchkova</VendorId>
+    <VendorDescription>a-suchkova@armo.ru</VendorDescription>
+  </AddIn>
+</RevitAddIns>
