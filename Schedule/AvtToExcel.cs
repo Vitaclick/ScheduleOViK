@@ -53,15 +53,15 @@ namespace Schedule
         scope.SetVariable("doc", doc);
         scope.SetVariable("uidoc", ui_doc);
         scope.SetVariable("uiapp", ui_app);
-        engine.ExecuteFile(@"D:\Drive\ARMOPlug\ScheduleGoogle\ScheduleOViK\Schedule\Resources\AvtToExcel.py", scope);
+        //engine.ExecuteFile(@"C:\Drive\ARMOPlug\ScheduleGoogle\ScheduleOViK\Schedule\Resources\AvtToExcel.py", scope);
 
-//        string scriptName = Assembly.GetExecutingAssembly().GetName().Name + ".Resources." + "AvtToExcel.py";
-//        Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(scriptName);
-//        if (stream != null)
-//        {
-//          string script = new StreamReader(stream).ReadToEnd();
-//          engine.Execute(script, scope);
-//        }
+        string scriptName = Assembly.GetExecutingAssembly().GetName().Name + ".Resources." + "AvtToExcel.py";
+        Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(scriptName);
+        if (stream != null)
+        {
+          string script = new StreamReader(stream).ReadToEnd();
+          engine.Execute(script, scope);
+        }
 
         // Import schedule data from IPython
         var revitData = new List<IList<object>>() { };

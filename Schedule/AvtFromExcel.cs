@@ -53,15 +53,15 @@ namespace Schedule
         engine.GetSysModule().SetVariable("dataFromSpreadsheet", dataFromSpreadsheet.ToArray());
         scope.SetVariable("doc", doc);
         scope.SetVariable("uidoc", ui_doc);
-        engine.ExecuteFile(@"D:\Drive\ARMOPlug\ScheduleGoogle\ScheduleOViK\Schedule\Resources\AvtFromExcel.py", scope);
+        //engine.ExecuteFile(@"C:\Drive\ARMOPlug\ScheduleGoogle\ScheduleOViK\Schedule\Resources\AvtFromExcel.py", scope);
 
-        //string scriptName = Assembly.GetExecutingAssembly().GetName().Name + ".Resources." + "AvtFromExcel.py";
-        //Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(scriptName);
-        //if (stream != null)
-        //{
-        //  string script = new StreamReader(stream).ReadToEnd();
-        //  engine.Execute(script, scope);
-        //}
+        string scriptName = Assembly.GetExecutingAssembly().GetName().Name + ".Resources." + "AvtFromExcel.py";
+        Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(scriptName);
+        if (stream != null)
+        {
+          string script = new StreamReader(stream).ReadToEnd();
+          engine.Execute(script, scope);
+        }
 
         TaskDialog.Show("Всё хорошо", "ОК");
 
