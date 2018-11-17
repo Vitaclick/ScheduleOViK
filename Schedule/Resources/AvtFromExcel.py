@@ -10,7 +10,7 @@ projInfo = doc.ProjectInformation
 code = projInfo.LookupParameter('CODE').AsString()
 
 parameters = [
-  '','',
+  '','','',
   'EQ_Description',
   'EQ_Material ID',
   'EQ_HVAC Panel',

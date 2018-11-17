@@ -19,6 +19,7 @@ namespace Schedule
   [Transaction(TransactionMode.Manual)]
   public class AvtToExcel : IExternalCommand
   {
+    
     public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
     {
       // Create conneciton to DB (закрывать соединение не нужно)
@@ -41,6 +42,9 @@ namespace Schedule
       }
 
       var range = $"{sheetName}!A:A";
+      var rangeB = $"{sheetName}!B:B";
+
+      var keysAtSheet = dbTransfer.ReadBatchSheetData(new[] { $"{sheetName}!A:A" });
 
       try
       {
@@ -53,6 +57,7 @@ namespace Schedule
         scope.SetVariable("doc", doc);
         scope.SetVariable("uidoc", ui_doc);
         scope.SetVariable("uiapp", ui_app);
+        scope.SetVariable("keysAtSheet", keysAtSheet);
         //engine.ExecuteFile(@"C:\Drive\ARMOPlug\ScheduleGoogle\ScheduleOViK\Schedule\Resources\AvtToExcel.py", scope);
 
         string scriptName = Assembly.GetExecutingAssembly().GetName().Name + ".Resources." + "AvtToExcel.py";
@@ -65,17 +70,18 @@ namespace Schedule
 
         // Import schedule data from IPython
         var revitData = new List<IList<object>>() { };
-
         var dynamicDataFromPy = scope.GetVariable("revData");
-
         foreach (var i in dynamicDataFromPy)
         {
           revitData.Add((IList<object>)i);
         }
 
-
-        //// Forming request from spreadsheet
-        //var uniqueSheetKeys = dbTransfer.ReadBatchSheetData(new[] { $"{sheetName}!A:A" });
+        var dynamicStatusFromPy = scope.GetVariable("status");
+        var revitStatus = new List<IList<object>>() { };
+        foreach (var i in dynamicStatusFromPy)
+        {
+          revitStatus.Add((IList<object>)i);
+        }
 
         // Forming request from spreadsheet
         var sheetBatchValues = dbTransfer.ReadBatchSheetData(new[] { $"{sheetName}!A:A" });
@@ -107,6 +113,8 @@ namespace Schedule
         }
 
         dbTransfer.WriteData(range, filteredNewValues);
+        dbTransfer.WriteColumn(rangeB, revitStatus);
+
 
         return Result.Succeeded;
       }

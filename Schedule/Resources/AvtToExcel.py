@@ -7,11 +7,11 @@ clr.AddReference('RevitAPI')
 from Autodesk.Revit.DB import *
 from itertools import groupby
 
-NoneList = (None, '', ' ')
-projInfo = doc.ProjectInformation
-code = projInfo.LookupParameter('CODE').AsString()
-
 def run():
+    NoneList = (None, '', ' ')
+    projInfo = doc.ProjectInformation
+    code = projInfo.LookupParameter('CODE').AsString()
+
     def UniqAndTag(e):
         groupcode = e.LookupParameter('GroupTag').AsString()
         partition = e.LookupParameter('partition').AsString()
@@ -47,13 +47,24 @@ def run():
         if equipment:
             for e in equipment:
                 uniqandtag = UniqAndTag(e)
-                revData.append([uniqandtag[0], uniqandtag[1]])
+                revData.append([uniqandtag[0], None, uniqandtag[1]])
         if signal:
             for e in signal:
                 uniqandtag = UniqAndTag(e)
-                revData.append([uniqandtag[0]] + [None]*31 + [uniqandtag[1]])
+                revData.append([uniqandtag[0]] + [None]*32 + [uniqandtag[1]])
+    
+    uniqsInModel = list(set([UniqAndTag(e)[0] for e in elemsWithElType]))
 
-    return revData
+    _keysAtSheet = [i for i in keysAtSheet[0]]
+    status = []
+    for i in _keysAtSheet:
+        if i not in uniqsInModel:
+            status.append(['Удалено из модели'])
+        else:
+            status.append([''])
+    status[0] = ['Статус'] # head row
+    return [revData, status]
 
-
-revData = run()
+data = run()
+revData = data[0]
+status = data[1]

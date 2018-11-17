@@ -198,19 +198,11 @@ def setThiDucts(e):
 def setThiItems(e):
     sysName = e.get_Parameter(BuiltInParameter.RBS_SYSTEM_NAME_PARAM).AsString()
     spcThi = e.LookupParameter("AG_Thickness")
+    typeIsol = e.get_Parameter(BuiltInParameter.RBS_REFERENCE_INSULATION_TYPE).AsString()
     thi = 0
     if e.Category.Id.IntegerValue == int(BuiltInCategory.OST_DuctFitting):
         cc = [i for i in e.MEPModel.ConnectorManager.Connectors]
-        maxConSquare = 0.0
-        for con in cc:
-            if con.Shape == ConnectorProfileType.Rectangular:
-                conSquare = con.Height * con.Width
-            elif con.Shape == ConnectorProfileType.Round:
-                conSquare = math.pi * con.Radius ** 2
-            if conSquare > maxConSquare:
-                outCon = con
-        typeIsol = e.get_Parameter(BuiltInParameter.RBS_REFERENCE_INSULATION_TYPE).AsString()
-        thi = tByConnector(sysName, outCon, typeIsol)
+        thi = max([tByConnector(sysName, con, typeIsol) for con in cc])
     elif e.Category.Id.IntegerValue == int(BuiltInCategory.OST_PipeFitting):
         cc = [i for i in e.MEPModel.ConnectorManager.Connectors]
         
@@ -234,7 +226,7 @@ def setCategoryCode(e, num):
 def squareDuct(e):
     sp = e.LookupParameter("PL_Area S")
     s = e.get_Parameter(BuiltInParameter.RBS_CURVE_SURFACE_AREA).AsDouble()
-    s_m = round(UnitUtils.ConvertFromInternalUnits(s, DisplayUnitType.DUT_SQUARE_METERS),1)
+    s_m = round(UnitUtils.ConvertFromInternalUnits(s, DisplayUnitType.DUT_SQUARE_METERS),2)
     sp.Set(s_m)
 
 def squareFittigs(e):
@@ -254,7 +246,7 @@ def squareFittigs(e):
             consArea += math.pi*(c.Radius**2)
 
     area = max([i.SurfaceArea for i in solids]) - consArea
-    area_m = round(UnitUtils.ConvertFromInternalUnits(area, DisplayUnitType.DUT_SQUARE_METERS),1)
+    area_m = round(UnitUtils.ConvertFromInternalUnits(area, DisplayUnitType.DUT_SQUARE_METERS),2)
     sp.Set(area_m)
 
 def groupCode(e):

@@ -169,6 +169,7 @@ namespace Schedule
           BitmapImage pb10Image = new BitmapImage(new Uri("pack://application:,,,/Schedule;component/Resources/importIcon.png"));
           pb10.LargeImage = pb10Image;
 
+
     }
 
         public Result OnShutdown(UIControlledApplication application)

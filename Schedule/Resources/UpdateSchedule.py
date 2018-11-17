@@ -98,53 +98,53 @@ def tByConnector(sysName, con, typeIsol):
         maxMM = UnitUtils.ConvertFromInternalUnits(maxS, DisplayUnitType.DUT_MILLIMETERS)
         if typeIsol != None and "EI" in typeIsol:
             if maxMM <= 2000.0:
-                t = "0.9"
+                t = 0.9
             else:
-                t = "1.2"
+                t = 1.2
         else:
             if sysName != None and any(sysName.__contains__(i) for i in antismoke):
                 if maxMM <= 2000.0:
-                    t = "0.9"
+                    t = 0.9
                 else:
-                    t = "1.2"
+                    t = 1.2
             else:
                 if maxMM <= 250.0:
-                    t = "0.5"
+                    t = 0.5
                 elif maxMM <= 1000:
-                    t = "0.7"
+                    t = 0.7
                 else:
-                    t = "0.9"
+                    t = 0.9
     elif shape == ConnectorProfileType.Round:
         d = con.Radius * 2
         dMM = UnitUtils.ConvertFromInternalUnits(d, DisplayUnitType.DUT_MILLIMETERS)
         if typeIsol != None and "EI" in typeIsol:
             if dMM <= 2000.0:
-                t = "0.9"
+                t = 0.9
             else:
-                t = "1.2"
+                t = 1.2
         else:
             if sysName != None and any(sysName.__contains__(i) for i in antismoke):
                 if dMM <= 800.0:
-                    t = "0.9"
+                    t = 0.9
                 elif dMM <= 1250.0:
-                    t = "1.0"
+                    t = 1.0
                 elif dMM <= 1600.0:
-                    t = "1.2"
+                    t = 1.2
                 else:
-                    t = "1.4"
+                    t = 1.4
             else:
                 if dMM <= 200.0:
-                    t = "0.5"
+                    t = 0.5
                 elif dMM <= 450.0:
-                    t = "0.6"
+                    t = 0.6
                 elif dMM <= 800.0:
-                    t = "0.7"
+                    t = 0.7
                 elif dMM <= 1250.0:
-                    t = "1.0"
+                    t = 1.0
                 elif dMM <= 1600.0:
-                    t = "1.2"
+                    t = 1.2
                 else:
-                    t = "1.4"
+                    t = 1.4
     return t
 # заполнить параметр Толщина Угол для воздуховодов
 def setThiDucts(e):
@@ -154,7 +154,7 @@ def setThiDucts(e):
         cc = [i for i in e.ConnectorManager.Connectors]
         con = cc[0]
         typeIsol = e.get_Parameter(BuiltInParameter.RBS_REFERENCE_INSULATION_TYPE).AsString()
-        thi = tByConnector(sysName, con, typeIsol)
+        thi = str(tByConnector(sysName, con, typeIsol))
     elif e.Category.Id.IntegerValue == int(BuiltInCategory.OST_FlexDuctCurves):
         thi = "0.15"
     elif e.Category.Id.IntegerValue == int(BuiltInCategory.OST_PipeCurves):
@@ -169,18 +169,11 @@ def setThiItems(e):
     sysName = e.LookupParameter("AG_Spc_Система").AsString()
     spcThiAngle = e.LookupParameter("AG_Spc_Толщина Угол")
     thi = "-"
+    typeIsol = e.get_Parameter(BuiltInParameter.RBS_REFERENCE_INSULATION_TYPE).AsString()
     if e.Category.Id.IntegerValue == int(BuiltInCategory.OST_DuctFitting):
         cc = [i for i in e.MEPModel.ConnectorManager.Connectors]
-        maxConSquare = 0.0
-        for con in cc:
-            if con.Shape == ConnectorProfileType.Rectangular:
-                conSquare = con.Height * con.Width
-            elif con.Shape == ConnectorProfileType.Round:
-                conSquare = math.pi * con.Radius ** 2
-            if conSquare > maxConSquare:
-                outCon = con
-        typeIsol = e.get_Parameter(BuiltInParameter.RBS_REFERENCE_INSULATION_TYPE).AsString()
-        thi = tByConnector(sysName, outCon, typeIsol)
+        thi = str(max([tByConnector(sysName, con, typeIsol) for con in cc]))
+
     elif e.Category.Id.IntegerValue == int(BuiltInCategory.OST_PipeFitting):
         cc = [i for i in e.MEPModel.ConnectorManager.Connectors]
         

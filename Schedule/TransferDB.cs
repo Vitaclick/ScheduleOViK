@@ -74,6 +74,19 @@ namespace Schedule
       var appendResponse = appendRequest.Execute();
     }
 
+    public void WriteColumn(string range, List<IList<object>> data)
+    {
+      var valueRange = new ValueRange();
+
+      valueRange.Values = data;
+
+      var updateRequest = service.Spreadsheets.Values.Update(valueRange, _spreadsheetId, range);
+
+      updateRequest.ValueInputOption = SpreadsheetsResource.ValuesResource.UpdateRequest.ValueInputOptionEnum.USERENTERED;
+      var updateResponse = updateRequest.Execute();
+
+    }
+
     public List<List<object>> ReadSheetData(string range)
     {
       var request = service.Spreadsheets.Values.Get(_spreadsheetId, range);
