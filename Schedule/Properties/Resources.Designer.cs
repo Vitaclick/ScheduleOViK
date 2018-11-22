@@ -83,9 +83,9 @@ namespace Schedule.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Byte[].
         /// </summary>
-        internal static byte[] CleanSchedule {
+        internal static byte[] BaseRelevance {
             get {
-                object obj = ResourceManager.GetObject("CleanSchedule", resourceCulture);
+                object obj = ResourceManager.GetObject("BaseRelevance", resourceCulture);
                 return ((byte[])(obj));
             }
         }
@@ -121,12 +121,12 @@ namespace Schedule.Properties {
         }
         
         /// <summary>
-        ///   Поиск локализованного ресурса типа System.Byte[].
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
         /// </summary>
-        internal static byte[] GenerateNames {
+        internal static System.Drawing.Bitmap statusBaseIcon {
             get {
-                object obj = ResourceManager.GetObject("GenerateNames", resourceCulture);
-                return ((byte[])(obj));
+                object obj = ResourceManager.GetObject("statusBaseIcon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         

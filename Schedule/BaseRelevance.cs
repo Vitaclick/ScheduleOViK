@@ -17,7 +17,7 @@ using Autodesk.Revit.Exceptions;
 namespace Schedule
 {
   [Transaction(TransactionMode.Manual)]
-  public class ExportToExcel : IExternalCommand
+  public class BaseRelevance : IExternalCommand
   {
     public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
     {
@@ -40,38 +40,11 @@ namespace Schedule
         return Result.Failed;
       }
 
-      var range = $"{sheetName}!A:A";
+      
+      var rangeStatus = $"{sheetName}!M:M";
 
       try
       {
-
-        ScriptEngine engine = Python.CreateEngine();
-
-        ScriptScope scope = engine.CreateScope();
-        scope.SetVariable("doc", doc);
-        scope.SetVariable("uidoc", ui_doc);
-        scope.SetVariable("uiapp", ui_app);
-
-        //engine.ExecuteFile(@"C:\Drive\ARMOPlug\ScheduleGoogle\ScheduleOViK\Schedule\Resources\ToExcel.py", scope);
-
-        string scriptName = Assembly.GetExecutingAssembly().GetName().Name + ".Resources." + "ToExcel.py";
-        Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(scriptName);
-        if (stream != null)
-        {
-          string script = new StreamReader(stream).ReadToEnd();
-          engine.Execute(script, scope);
-        }
-
-        // Import schedule data from IPython
-        var revitData = new List<IList<object>>() { };
-
-        var dynamicDataFromPy = scope.GetVariable("revData");
-
-        foreach (var i in dynamicDataFromPy)
-        {
-          revitData.Add((IList<object>)i);
-        }
-
         // Forming request from spreadsheet
         var sheetBatchValues = dbTransfer.ReadBatchSheetData(new[] { $"{sheetName}!A:A", $"{sheetName}!C:C", $"{sheetName}!D:D" });
 
@@ -86,20 +59,35 @@ namespace Schedule
             uniqueSheetKeys.Add(key);
           }
         }
-        // match revit data values with spreadsheet
-        var filteredNewValues = new List<IList<object>> { };
 
-        foreach (var dataRow in revitData)
+        ScriptEngine engine = Python.CreateEngine();
+
+        ScriptScope scope = engine.CreateScope();
+        scope.SetVariable("doc", doc);
+        scope.SetVariable("uidoc", ui_doc);
+        scope.SetVariable("uiapp", ui_app);
+        scope.SetVariable("keysAtSheet", uniqueSheetKeys);
+
+        //engine.ExecuteFile(@"C:\Drive\ARMOPlug\ScheduleGoogle\ScheduleOViK\Schedule\Resources\BaseRelevance.py", scope);
+
+        string scriptName = Assembly.GetExecutingAssembly().GetName().Name + ".Resources." + "BaseRelevance.py";
+        Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(scriptName);
+        if (stream != null)
         {
-          // form unique key for revit schedule data
-          var uniqueRevitDataKey = dataRow[0] as string + dataRow[2] + dataRow[3];
-          if (!uniqueSheetKeys.Contains(uniqueRevitDataKey))
-          {
-            filteredNewValues.Add(dataRow);
-          }
+          string script = new StreamReader(stream).ReadToEnd();
+          engine.Execute(script, scope);
         }
 
-        dbTransfer.WriteData(range, filteredNewValues);
+        // Import schedule data from IPython
+        var dynamicStatusFromPy = scope.GetVariable("status");
+        var revitStatus = new List<IList<object>>() { };
+        foreach (var i in dynamicStatusFromPy)
+        {
+          revitStatus.Add((IList<object>)i);
+        }
+
+
+        dbTransfer.WriteColumn(rangeStatus, revitStatus);
 
         return Result.Succeeded;
       }

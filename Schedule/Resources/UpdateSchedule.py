@@ -15,6 +15,11 @@ from itertools import groupby
 clr.AddReference('RevitAPI')
 from Autodesk.Revit.DB import *
 
+clr.AddReference('System.Windows.Forms')
+clr.AddReference('System.Drawing')
+from System.Drawing import *
+from System.Windows.Forms import *
+
 antismoke = ['ВПВ', 'ППВ', 'ДУ', 'КДУ', 'ПВ']
 # функция определения настоящего уровня элемента
 def findLevel(z, levelsSort):
@@ -214,6 +219,7 @@ def setStock(e, value):
     pStock = e.LookupParameter('AG_Spc_Запас')
     pStock.Set(value)
 
+
 # воздуховоды
 ducts = FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_DuctCurves).WhereElementIsNotElementType().ToElements()
 # гибкий воздуховод
@@ -254,165 +260,223 @@ t.Start()
 
 # оборудование
 if equipment:
-    for e in equipment:
-        parSys(e)
-        itemLevel(e)
-        parItemQuant(e)
-        parUnit(e, "компл.")
-        setCategoryCode(e, 10)
-        setStock(e, 1.0)
+    try:
+        for e in equipment:
+            parSys(e)
+            itemLevel(e)
+            parItemQuant(e)
+            parUnit(e, "компл.")
+            setCategoryCode(e, 10)
+            setStock(e, 1.0)
+    except:
+        msg = 'Оборудование: AG_Spc_Система, AG_Spc_Уровень, AG_Spc_Количество, AG_Spc_ЕдИзм, AG_Spc_Код категории, AG_Spc_Запас'
+        MessageBox.Show(msg, 'Проверьте параметры', MessageBoxButtons.OK, MessageBoxIcon.Information)
 
 # воздухораспределители
 if terminal:
-    for e in terminal:
-        parSys(e)
-        parSize(e)
-        parItemQuant(e)
-        parUnit(e, "шт.")
-        itemLevel(e)
-        setCategoryCode(e, 20)
-        setStock(e, 1.0)
-
+    try:
+        for e in terminal:
+            parSys(e)
+            parSize(e)
+            parItemQuant(e)
+            parUnit(e, "шт.")
+            itemLevel(e)
+            setCategoryCode(e, 20)
+            setStock(e, 1.0)
+    except:
+        msg = 'Воздухораспределители: AG_Spc_Система, AG_Spc_Размер, AG_Spc_Количество, AG_Spc_ЕдИзм, AG_Spc_Уровень, AG_Spc_Код категории, AG_Spc_Запас'
+        MessageBox.Show(msg, 'Проверьте параметры', MessageBoxButtons.OK, MessageBoxIcon.Information)
 # арматура
 if accessory:
-    for e in accessory:
-        parSys(e)
-        parSize(e)
-        parItemQuant(e)
-        parUnit(e, "шт.")
-        itemLevel(e)
-        setCategoryCode(e, 30)
-        setStock(e, 1.0)
+    try:
+        for e in accessory:
+            parSys(e)
+            parSize(e)
+            parItemQuant(e)
+            parUnit(e, "шт.")
+            itemLevel(e)
+            setCategoryCode(e, 30)
+            setStock(e, 1.0)
+    except:
+        msg = 'Арматура воздуховодов: AG_Spc_Система, AG_Spc_Размер, AG_Spc_Количество, AG_Spc_ЕдИзм, AG_Spc_Уровень, AG_Spc_Код категории, AG_Spc_Запас'
+        MessageBox.Show(msg, 'Проверьте параметры', MessageBoxButtons.OK, MessageBoxIcon.Information)
 
 # фитинги
 if fitings:
-    for e in fitings:
-        parSys(e)
-        parSize(e)
-        parItemQuant(e)
-        parUnit(e, "шт.")
-        itemLevel(e)
-        setThiItems(e)
-        setCategoryCode(e, 40)
-        setStock(e, 1.0)
+    try:
+        for e in fitings:
+            parSys(e)
+            parSize(e)
+            parItemQuant(e)
+            parUnit(e, "шт.")
+            itemLevel(e)
+            setThiItems(e)
+            setCategoryCode(e, 40)
+            setStock(e, 1.0)
+    except:
+        msg = 'Соединительные детали воздуховодов: AG_Spc_Система, AG_Spc_Размер, AG_Spc_Количество, AG_Spc_ЕдИзм, AG_Spc_Уровень, AG_Spc_Толщина Угол, AG_Spc_Код категории, AG_Spc_Запас'
+        MessageBox.Show(msg, 'Проверьте параметры', MessageBoxButtons.OK, MessageBoxIcon.Information)
 
 # воздуховоды
 if ducts:
-    for e in ducts:
-        parSys(e)
-        parSize(e)
-        parDuctQuant(e)
-        parUnit(e, "м")
-        runLevel(e)
-        setThiDucts(e)
-        setCategoryCode(e, 50)
-        setStock(e, 1.15)
+    try:
+        for e in ducts:
+            parSys(e)
+            parSize(e)
+            parDuctQuant(e)
+            parUnit(e, "м")
+            runLevel(e)
+            setThiDucts(e)
+            setCategoryCode(e, 50)
+            setStock(e, 1.15)
+    except:
+        msg = 'Соединительные детали воздуховодов: AG_Spc_Система, AG_Spc_Размер, AG_Spc_Количество, AG_Spc_ЕдИзм, AG_Spc_Уровень, AG_Spc_Толщина Угол, AG_Spc_Код категории, AG_Spc_Запас'
+        MessageBox.Show(msg, 'Проверьте параметры', MessageBoxButtons.OK, MessageBoxIcon.Information)
 
 # гибкие воздуховоды
 if flexDuct:
-    for e in flexDuct:
-        parSys(e)
-        parSize(e)
-        parDuctQuant(e)
-        parUnit(e, "м")
-        runLevel(e)
-        setThiDucts(e)
-        setCategoryCode(e, 51)
-        setStock(e, 1.15)
+    try:
+        for e in flexDuct:
+            parSys(e)
+            parSize(e)
+            parDuctQuant(e)
+            parUnit(e, "м")
+            runLevel(e)
+            setThiDucts(e)
+            setCategoryCode(e, 51)
+            setStock(e, 1.15)
+    except:
+        msg = 'Гибкие воздуховоды: AG_Spc_Система, AG_Spc_Размер, AG_Spc_Количество, AG_Spc_ЕдИзм, AG_Spc_Уровень, AG_Spc_Толщина Угол, AG_Spc_Код категории, AG_Spc_Запас'
+        MessageBox.Show(msg, 'Проверьте параметры', MessageBoxButtons.OK, MessageBoxIcon.Information)
 
 # трубы
 if pipes:
-    for e in pipes:
-        parSys(e)
-        parSize(e)
-        parDuctQuant(e)
-        parUnit(e, "м")
-        runLevel(e)
-        setThiDucts(e)
-        setCategoryCode(e, 60)
-        setStock(e, 1.15)
+    try:
+        for e in pipes:
+            parSys(e)
+            parSize(e)
+            parDuctQuant(e)
+            parUnit(e, "м")
+            runLevel(e)
+            setThiDucts(e)
+            setCategoryCode(e, 60)
+            setStock(e, 1.15)
+    except:
+        msg = 'Трубы: AG_Spc_Система, AG_Spc_Размер, AG_Spc_Количество, AG_Spc_ЕдИзм, AG_Spc_Уровень, AG_Spc_Толщина Угол, AG_Spc_Код категории, AG_Spc_Запас'
+        MessageBox.Show(msg, 'Проверьте параметры', MessageBoxButtons.OK, MessageBoxIcon.Information)
 
 # гибкие трубы
 if flexPipe:
-    for e in flexPipe:
-        parSys(e)
-        parSize(e)
-        parDuctQuant(e)
-        parUnit(e, "м")
-        runLevel(e)
-        setCategoryCode(e, 61)
-        setStock(e, 1.15)
+    try:
+        for e in flexPipe:
+            parSys(e)
+            parSize(e)
+            parDuctQuant(e)
+            parUnit(e, "м")
+            runLevel(e)
+            setCategoryCode(e, 61)
+            setStock(e, 1.15)
+    except:
+        msg = 'Гибкие трубы: AG_Spc_Система, AG_Spc_Размер, AG_Spc_Количество, AG_Spc_ЕдИзм, AG_Spc_Уровень, AG_Spc_Код категории, AG_Spc_Запас'
+        MessageBox.Show(msg, 'Проверьте параметры', MessageBoxButtons.OK, MessageBoxIcon.Information)
 
 # соед детали труб
 if pipeFitings:
-    for e in pipeFitings:
-        parSys(e)
-        parSize(e)
-        parItemQuant(e)
-        parUnit(e, "шт.")
-        itemLevel(e)
-        setThiItems(e)
-        setCategoryCode(e, 70)
-        setStock(e, 1.0)
+    try:
+        for e in pipeFitings:
+            parSys(e)
+            parSize(e)
+            parItemQuant(e)
+            parUnit(e, "шт.")
+            itemLevel(e)
+            setThiItems(e)
+            setCategoryCode(e, 70)
+            setStock(e, 1.0)
+    except:
+        msg = 'Соединительные детали труб: AG_Spc_Система, AG_Spc_Размер, AG_Spc_Количество, AG_Spc_ЕдИзм, AG_Spc_Уровень, AG_Spc_Толщина Угол, AG_Spc_Код категории, AG_Spc_Запас'
+        MessageBox.Show(msg, 'Проверьте параметры', MessageBoxButtons.OK, MessageBoxIcon.Information)
 
 # арматура труб
 if pipeAccessory:
-    for e in pipeAccessory:
-        parSys(e)
-        parSize(e)
-        parItemQuant(e)
-        parUnit(e, "шт.")
-        itemLevel(e)
-        setCategoryCode(e, 80)
-        setStock(e, 1.0)
+    try:
+        for e in pipeAccessory:
+            parSys(e)
+            parSize(e)
+            parItemQuant(e)
+            parUnit(e, "шт.")
+            itemLevel(e)
+            setCategoryCode(e, 80)
+            setStock(e, 1.0)
+    except:
+        msg = 'Арматура трубопроводов: AG_Spc_Система, AG_Spc_Размер, AG_Spc_Количество, AG_Spc_ЕдИзм, AG_Spc_Уровень, AG_Spc_Код категории, AG_Spc_Запас'
+        MessageBox.Show(msg, 'Проверьте параметры', MessageBoxButtons.OK, MessageBoxIcon.Information)
 
 # сантехника
 if plumbing:
-    for e in plumbing:
-        parSys(e)
-        itemLevel(e)
-        parItemQuant(e)
-        parUnit(e, "шт.")
-        setCategoryCode(e, 90)
-        setStock(e, 1.0)
+    try:
+        for e in plumbing:
+            parSys(e)
+            itemLevel(e)
+            parItemQuant(e)
+            parUnit(e, "шт.")
+            setCategoryCode(e, 90)
+            setStock(e, 1.0)
+    except:
+        msg = 'Сантехника: AG_Spc_Система, AG_Spc_Количество, AG_Spc_ЕдИзм, AG_Spc_Уровень, AG_Spc_Код категории, AG_Spc_Запас'
+        MessageBox.Show(msg, 'Проверьте параметры', MessageBoxButtons.OK, MessageBoxIcon.Information)
 
 # сприклеры
 if sprinklers:
-    for e in sprinklers:
-        parSys(e)
-        itemLevel(e)
-        parItemQuant(e)
-        parUnit(e, "шт.")
-        setCategoryCode(e, 100)
-        setStock(e, 1.0)
+    try:
+        for e in sprinklers:
+            parSys(e)
+            itemLevel(e)
+            parItemQuant(e)
+            parUnit(e, "шт.")
+            setCategoryCode(e, 100)
+            setStock(e, 1.0)
+    except:
+        msg = 'Спринклеры: AG_Spc_Система, AG_Spc_Количество, AG_Spc_ЕдИзм, AG_Spc_Уровень, AG_Spc_Код категории, AG_Spc_Запас'
+        MessageBox.Show(msg, 'Проверьте параметры', MessageBoxButtons.OK, MessageBoxIcon.Information)
 
 # изоляция воздуховодов
 if isol:
-    for e in isol:
-        parSys(e)
-        parIsolQuant(e)
-        parUnit(e, "м²")
-        runLevel(e)
-        setCategoryCode(e, 110)
-        setStock(e, 1.45)
+    try:
+        for e in isol:
+            parSys(e)
+            parIsolQuant(e)
+            parUnit(e, "м²")
+            runLevel(e)
+            setCategoryCode(e, 110)
+            setStock(e, 1.45)
+    except:
+        msg = 'Изоляция воздуховодов: AG_Spc_Система, AG_Spc_Количество, AG_Spc_ЕдИзм, AG_Spc_Уровень, AG_Spc_Код категории, AG_Spc_Запас'
+        MessageBox.Show(msg, 'Проверьте параметры', MessageBoxButtons.OK, MessageBoxIcon.Information)
 
 # изоляция труб
 if pipeIsol:
-    for e in pipeIsol:
-        parSys(e)
-        parIsolQuantPipe(e)
-        parUnit(e, "м")
-        runLevel(e)
-        sizePipeIsol(e)
-        setCategoryCode(e, 120)
-        setStock(e, 1.25)
+    try:
+        for e in pipeIsol:
+            parSys(e)
+            parIsolQuantPipe(e)
+            parUnit(e, "м")
+            runLevel(e)
+            sizePipeIsol(e)
+            setCategoryCode(e, 120)
+            setStock(e, 1.25)
+    except:
+        msg = 'Материалы изоляции труб: AG_Spc_Система, AG_Spc_Количество, AG_Spc_ЕдИзм, AG_Spc_Уровень, AG_Spc_Размер, AG_Spc_Толщина Угол, AG_Spc_Код категории, AG_Spc_Запас'
+        MessageBox.Show(msg, 'Проверьте параметры', MessageBoxButtons.OK, MessageBoxIcon.Information)
 
 # обобщенные модели
 if generic:
-    for e in generic:
-        setCategoryCode(e, 130)
-        setStock(e, 1.0)
-
+    try:
+        for e in generic:
+            setCategoryCode(e, 130)
+            setStock(e, 1.0)
+    except:
+        msg = 'Обобщенные модели: AG_Spc_Код категории, AG_Spc_Запас'
+        MessageBox.Show(msg, 'Проверьте параметры', MessageBoxButtons.OK, MessageBoxIcon.Information)
 
 t.Commit()
 

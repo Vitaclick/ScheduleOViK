@@ -45,30 +45,6 @@ namespace Schedule
             // Get dll assembly path
             string thisAssemblyPath = Assembly.GetExecutingAssembly().Location;
 
-            // create push button for CleanSchedule
-            PushButtonData b1Data = new PushButtonData(
-                "cmdCleanSchedule",
-                "Очистить" + System.Environment.NewLine + "  параметры  ",
-                thisAssemblyPath,
-                "Schedule.CleanSchedule");
-
-            PushButton pb1 = ribbonPanel.AddItem(b1Data) as PushButton;
-            pb1.ToolTip = "Очистка параметров спецификации";
-            BitmapImage pb1Image = new BitmapImage(new Uri("pack://application:,,,/Schedule;component/Resources/cleanTableIcon.png"));
-            pb1.LargeImage = pb1Image;
-
-            // create push button for GenerateNames
-            PushButtonData b2Data = new PushButtonData(
-                "cmdGenerateNames",
-                "Сгенерировать" + System.Environment.NewLine + "  наименования  ",
-                thisAssemblyPath,
-                "Schedule.GenerateNames");
-
-            PushButton pb2 = ribbonPanel.AddItem(b2Data) as PushButton;
-            pb2.ToolTip = "Генерация наименований воздуховодов, труб, соединительных деталей";
-            BitmapImage pb2Image = new BitmapImage(new Uri("pack://application:,,,/Schedule;component/Resources/genNamesIcon.png"));
-            pb2.LargeImage = pb2Image;
-
             // create push button for UpdateSchedule
             PushButtonData b3Data = new PushButtonData(
                 "cmdUpdateSchedule",
@@ -168,6 +144,18 @@ namespace Schedule
           pb10.ToolTip = "Импортировать TAG автоматики из эксель";
           BitmapImage pb10Image = new BitmapImage(new Uri("pack://application:,,,/Schedule;component/Resources/importIcon.png"));
           pb10.LargeImage = pb10Image;
+
+                // create push button for BaseRelevance
+          PushButtonData b11Data = new PushButtonData(
+            "cmdBaseRelevance",
+            "Актуальность" + System.Environment.NewLine + "базы OViK",
+            thisAssemblyPath,
+            "Schedule.BaseRelevance");
+
+          PushButton pb11 = ribbonPanel.AddItem(b11Data) as PushButton;
+          pb11.ToolTip = "Проверить актуальность записей в базе OViK через сводник";
+          BitmapImage pb11Image = new BitmapImage(new Uri("pack://application:,,,/Schedule;component/Resources/statusBaseIcon.png"));
+          pb11.LargeImage = pb11Image;
 
 
     }

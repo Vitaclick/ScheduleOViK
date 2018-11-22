@@ -1,48 +1,62 @@
-# создание базы в экселе и заполнение ее новыми строками
 # -*- coding: utf-8 -*-
 import clr
 
 clr.AddReference('RevitAPI')
 from Autodesk.Revit.DB import *
 
-def indForDelete(l):
-    IndUnit = l.index("AG_Spc_ЕдИзм")
-    IndPos = l.index("AG_Spc_Позиция")
-    IndMat = l.index("AG_Spc_Материал")
-    IndCount = l.index("AG_Spc_Количество")
-    IndLevel = l.index("AG_Spc_Уровень")
-    IndToSpec = l.index("AG_Spc_Занесение в спецификацию")
-    return [IndPos, IndMat, IndUnit, IndCount, IndLevel, IndToSpec]
+userName = uiapp.Application.Username
+revData = []
+keysFromModel = []
+def getCodesFromElements(elems):
+    if elems:
+        elemsWithCatCode = []
+        for e in elems:
+            parCatCode = e.LookupParameter('AG_Spc_Код категории')
+            if parCatCode != None:
+                parCatCodeValue = parCatCode.AsDouble()
+                if parCatCodeValue > 0.0:
+                    elemsWithCatCode.append(e)
+        for e in elemsWithCatCode:
+            parCatCodeValue = e.LookupParameter('AG_Spc_Код категории').AsDouble()
+            famName = e.get_Parameter(BuiltInParameter.ELEM_FAMILY_AND_TYPE_PARAM).AsValueString()
+            spcThi = e.LookupParameter("AG_Spc_Толщина Угол").AsString()
+            spcSize = e.LookupParameter("AG_Spc_Размер").AsString()
+            row = [famName, '', spcThi, spcSize, '', '', '', '', '', '', parCatCodeValue, userName]
+            keysFromModel.append(row)
 
-def searchData(zippedLists):
-    searchData = []
-    for i in zippedLists:
-        _=""
-        for ii in i:
-            if ii != None:
-                _+= ii
-        searchData.append(_)
-    return searchData
 
-def run():
-    viewSchedule = doc.ActiveView
-    userName = uiapp.Application.Username
+ducts = FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_DuctCurves).WhereElementIsNotElementType().ToElements()
+flexDuct = FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_FlexDuctCurves).WhereElementIsNotElementType().ToElements()
+fitings = FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_DuctFitting).WhereElementIsNotElementType().ToElements()
+accessory = FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_DuctAccessory).WhereElementIsNotElementType().ToElements()
+terminal = FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_DuctTerminal).WhereElementIsNotElementType().ToElements()
+isol = FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_DuctInsulations).WhereElementIsNotElementType().ToElements()
+equipment = FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_MechanicalEquipment).WhereElementIsNotElementType().ToElements()
+pipes = FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_PipeCurves).WhereElementIsNotElementType().ToElements()
+pipeFitings = FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_PipeFitting).WhereElementIsNotElementType().ToElements()
+pipeAccessory = FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_PipeAccessory).WhereElementIsNotElementType().ToElements()
+flexPipe = FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_FlexPipeCurves).WhereElementIsNotElementType().ToElements()
+plumbing = FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_PlumbingFixtures).WhereElementIsNotElementType().ToElements()
+sprinklers = FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_Sprinklers).WhereElementIsNotElementType().ToElements()
+pipeIsol = FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_PipeInsulations).WhereElementIsNotElementType().ToElements()
+generic = FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_GenericModel).WhereElementIsNotElementType().ToElements()
 
-    if viewSchedule.ViewType != ViewType.Schedule:
-        MessageBox.Show("Откройте спецификацию", "Предупреждение", MessageBoxButtons.OK, MessageBoxIcon.Information)
-    else:
-        sectionData = viewSchedule.GetTableData().GetSectionData(SectionType.Body)
-        numberOfRows = sectionData.NumberOfRows
-        numberOfColumns = sectionData.NumberOfColumns
-        headData = [viewSchedule.GetCellText(SectionType.Body, 0, column) for column in range(numberOfColumns)]
-        #спека ревита, очищенная от ненужных столбцов
-        revData = [[viewSchedule.GetCellText(SectionType.Body, row, column) for column in range(numberOfColumns) if column not in indForDelete(headData)] for row in range(numberOfRows)]
-        revData[0].append("Имя пользователя")
-        revData[1].append("")
-        for i in revData[2:]:
-            i.append(userName)
-        numberOfColumns = len(revData[0])
-    return revData
+getCodesFromElements(ducts)
+getCodesFromElements(flexDuct)
+getCodesFromElements(fitings)
+getCodesFromElements(accessory)
+getCodesFromElements(terminal)
+getCodesFromElements(isol)
+getCodesFromElements(equipment)
+getCodesFromElements(pipes)
+getCodesFromElements(pipeFitings)
+getCodesFromElements(pipeAccessory)
+getCodesFromElements(flexPipe)
+getCodesFromElements(plumbing)
+getCodesFromElements(sprinklers)
+getCodesFromElements(pipeIsol)
+getCodesFromElements(generic)
 
-# Запуск главной функции (для дебага и возврата основного массива данных в переменной)
-revData = run()
+for i in keysFromModel:
+    if i not in revData:
+        revData.append(i)

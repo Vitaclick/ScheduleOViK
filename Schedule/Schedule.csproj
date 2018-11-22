@@ -144,6 +144,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Net.Http" />
     <Reference Include="Zlib.Portable, Version=1.11.0.0, Culture=neutral, PublicKeyToken=431cba815f6a8b5b, processorArchitecture=MSIL">
       <HintPath>..\packages\Zlib.Portable.Signed.1.11.0\lib\portable-net4+sl5+wp8+win8+wpa81+MonoTouch+MonoAndroid\Zlib.Portable.dll</HintPath>
@@ -153,33 +154,32 @@
     <Compile Include="App.cs" />
     <Compile Include="AvtToExcel.cs" />
     <Compile Include="AvtFromExcel.cs" />
-    <Compile Include="UpdatePartsList.cs" />
-    <Compile Include="FromExcelEqL.cs" />
-    <Compile Include="ToExcelEqL.cs" />
-    <Compile Include="GenerateNames.cs" />
-    <Compile Include="ImportFromExcel.cs" />
-    <Compile Include="ExportToExcel.cs" />
+    <Compile Include="BaseRelevance.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="UpdatePartsList.cs" />
+    <Compile Include="FromExcelEqL.cs" />
+    <Compile Include="ToExcelEqL.cs" />
+    <Compile Include="ImportFromExcel.cs" />
+    <Compile Include="ExportToExcel.cs" />
     <Compile Include="TransferDB.cs" />
     <Compile Include="UpdateSchedule.cs" />
-    <Compile Include="CleanSchedule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\cleanTableIcon.png" />
     <Resource Include="Resources\updateTableIcon.png" />
     <Resource Include="Resources\exportIcon.png" />
     <Resource Include="Resources\importIcon.png" />
-    <Resource Include="Resources\genNamesIcon.png" />
     <EmbeddedResource Include="Resources\ToExcelEqL.py" />
     <EmbeddedResource Include="Resources\FromExcelEqL.py" />
     <EmbeddedResource Include="Resources\AvtToExcel.py" />
     <EmbeddedResource Include="Resources\AvtFromExcel.py" />
     <EmbeddedResource Include="Resources\UpdatePartsList.py" />
+    <Resource Include="Resources\statusBaseIcon.png" />
+    <EmbeddedResource Include="Resources\BaseRelevance.py" />
     <Content Include="Schedule.addin">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
@@ -189,11 +189,9 @@
     <None Include="app.config" />
     <EmbeddedResource Include="Resources\client_secret.json" />
     <None Include="packages.config" />
-    <EmbeddedResource Include="Resources\CleanSchedule.py" />
     <EmbeddedResource Include="Resources\UpdateSchedule.py" />
     <EmbeddedResource Include="Resources\ToExcel.py" />
     <EmbeddedResource Include="Resources\FromExcel.py" />
-    <EmbeddedResource Include="Resources\GenerateNames.py" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
